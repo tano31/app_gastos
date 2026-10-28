@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="digitizer.title">Digitalizador - Control de Gastos</title>
+  <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
+  <link rel="stylesheet" href="styles.css?v=20261018-movements-loading">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="perfil.css?v=20261018-header-icons">
+  <link rel="stylesheet" href="notificaciones.css">
+  <link rel="stylesheet" href="recorrido.css?v=20261025-wishlist">
+  <link rel="stylesheet" href="digitalizador.css?v=20261024-save-items">
+  <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
+  <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
+  <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+</head>
+<body>
+  <aside class="sidebar">
+
+    <div class="sidebar-top">
+
+      <div class="sidebar-user">
+        <img id="sidebarAvatar" src="img/user-default.svg" class="sidebar-avatar" alt="Foto de usuario" data-i18n-alt="profile.photo">
+        <strong id="sidebarUserId" class="sidebar-user-id"></strong>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </a>
+        <a href="index.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span data-i18n="nav.control">Control gastos</span>
+        </a>
+
+        <a href="inversiones.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span data-i18n="invest.name">Inversiones</span>
+        </a>
+
+        <a href="gastos-fijos.html">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span data-i18n="fixedPage.name">Gastos fijos</span>
+        </a>
+        
+
+
+        <a href="nubank.html">
+          <img src="img/logo_nubank.png" alt="Nubank" class="sidebar-icon">
+        </a>
+
+        <a href="c6.html">
+          <img src="img/logo_c6.png" alt="C6 Bank" class="sidebar-icon">
+        </a>
+        <a href="mercado.html">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span data-i18n="market.name">Mercado</span>
+        </a>
+
+        <a href="digitalizador.html" class="active"><i class="fa-solid fa-receipt"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+        <a href="wishlist.html"><i class="fa-solid fa-lightbulb"></i><span>Wishlist</span></a>
+        <a href="configuracion.html">
+          <i class="fa-solid fa-gear"></i>
+          <span data-i18n="nav.settings">Configuración</span>
+        </a>
+
+      </nav>
+
+    </div>
+
+    <div class="sidebar-footer">
+    <button id="logoutBtn" class="logout-btn" type="button">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span data-i18n="nav.logout">Salir</span>
+    </button>
+      <p class="app-version" data-i18n="nav.version">Versión 1.1</p>
+    </div>
+
+  </aside>
+  <div class="main-content">
+    <header class="app-header">
+      <div>
+        <h1 class="page-section-title"><i class="fa-solid fa-receipt" aria-hidden="true"></i><span data-i18n="digitizer.name">Digitalizador</span></h1>
+        <p data-copy="subtitle">Consultá tus notas fiscales de Brasil desde una foto o su QR.</p>
+      </div>
+    </header>
+    <main class="container">
+      <section class="panel digitizer-card">
+        <div class="digitizer-icon"><i class="fa-solid fa-receipt" aria-hidden="true"></i></div>
+        <h2 data-copy="heading">Digitalizar nota fiscal</h2>
+        <p data-copy="intro">Cargá una foto donde se vea el QR o pegá el enlace de consulta de tu nota.</p>
+        <label class="digitizer-drop" for="receiptPhoto"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><strong data-scan="choose">Agregar fotos de la misma nota</strong><span data-scan="limits">Hasta 10 fotos, 10 MB por foto y 50 MB en total. Agregalas en el orden de lectura.</span><input id="receiptPhoto" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>
+        <div id="receiptPhotos" class="receipt-photos"></div>
+        <div class="receipt-actions"><button id="receiptAnalyze" type="button" data-scan="retry" hidden>Reintentar lectura</button><button id="receiptConsolidate" type="button" data-scan="consolidate" disabled>Consolidar y revisar</button><button id="receiptClear" type="button" class="secondary" data-scan="clear" hidden>Nueva nota</button></div>
+        <p id="receiptBatchStatus" role="status" aria-live="polite"></p>
+        <section id="receiptDraft" class="digitizer-result" hidden>
+          <h3 data-scan="draft">Detalle consolidado · Revisar</h3>
+          <p data-scan="review">Los datos son sugerencias de lectura. Revisá las fotos y corregí los campos antes de descargar. No se crea un movimiento.</p>
+          <label><span data-scan="merchant">Supermercado / comercio</span><input id="receiptMerchant" maxlength="200"></label>
+          <label><span data-scan="date">Fecha</span><input id="receiptDate" type="date"></label>
+          <label><span data-scan="total">Total de la nota (BRL)</span><input id="receiptTotal" type="number" step="0.01" min="0"></label>
+          <p data-scan="extraHelp">El valor entre paréntesis se conserva separado del precio y del total del producto.</p>
+          <div class="table-wrapper"><table><thead><tr><th data-scan="code">Código</th><th data-scan="product">Producto</th><th data-scan="quantity">Cantidad</th><th data-scan="unit">Unidad</th><th data-scan="price">Precio unitario</th><th data-scan="extraValue">Valor</th><th data-scan="lineTotal">Total</th><th></th></tr></thead><tbody id="receiptItems"></tbody></table></div>
+          <p id="receiptReconciliation" role="status"></p>
+          <div class="receipt-actions"><button id="receiptAddItem" type="button" data-scan="add">Agregar producto</button><button id="receiptSaveItems" type="button" data-scan="saveItems">Guardar productos en Google Sheets</button><button id="receiptDownload" type="button" data-scan="download">Descargar detalle revisado</button></div>
+          <p id="receiptSaveStatus" role="status" aria-live="polite"></p>
+        </section>
+        <form id="receiptQrForm">
+          <label for="receiptQr" data-copy="qrLabel">Enlace del QR de la nota fiscal</label>
+          <input id="receiptQr" type="url" placeholder="https://www.nfce.fazenda.sp.gov.br/..." required>
+          <button type="submit" data-copy="identify">Consultar nota fiscal</button>
+        </form>
+        <p id="digitizerStatus" role="status" aria-live="polite"></p>
+        <section id="receiptOcrResult" class="digitizer-result" hidden>
+          <h3 data-copy="ocrTitle">Texto leído de la foto</h3>
+          <p data-copy="ocrHelp">Revisá los datos reconocidos: una foto borrosa puede producir errores.</p>
+          <p id="receiptPhotoKey"></p>
+          <textarea id="receiptOcrText" rows="10" aria-label="Texto leído de las fotos" data-copy-aria="ocrTitle"></textarea>
+          <button id="receiptReparse" type="button" data-scan="reparse">Actualizar campos desde este texto</button>
+        </section>
+        <section id="receiptResult" class="digitizer-result" hidden>
+          <h3 data-copy="identified">Enlace de consulta identificado</h3>
+          <p id="receiptAuthority"></p><p id="receiptKey"></p>
+          <a id="receiptOfficialLink" target="_blank" rel="noopener noreferrer" data-copy="open">Abrir nota en SEFAZ</a>
+          <p data-copy="pending">La extracción automática del detalle de productos todavía no está conectada. Podés consultar la nota en el sitio oficial; esta pantalla no registra gastos.</p>
+        </section>
+        <p class="digitizer-note" data-copy="privacy">La foto se procesa en este navegador y no se sube a ningún servicio.</p>
+      </section>
+    </main>
+  </div>
+  <script src="i18next.min.js"></script><script src="translations.js"></script><script src="i18n.js"></script><script src="datos-cache.js?v=20261024"></script>
+  <script src="moneda.js"></script>
+  <script src="sesion.js?v=20261027-fade4s-label"></script><script src="perfil.js"></script><script src="medios-pago.js?v=20261024"></script>
+  <script src="notificaciones.js?v=20261025-independent-settings"></script><script src="digitalizador.js?v=20261021-multi"></script><script src="notas-fiscales-datos.js?v=20261024-dia-quantity"></script><script src="digitalizador-fotos.js?v=20261024-dia-quantity"></script><script src="asistente.js?v=20261025-wealth-goal"></script>
+  <script src="recorrido.js?v=20261025-wishlist"></script>
+  <script src="perfil-pendiente.js?v=20261024-dismissible"></script>
+  <script src="aviso-dolar.js?v=20261026-yellow"></script>
+</body></html>

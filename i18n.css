@@ -1,0 +1,61 @@
+.language-selector {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 1100;
+  padding: 2px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 3px 12px #0f172a26;
+}
+.language-selector button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+}
+.language-toggle { border-color: #2563eb !important; background: #eff6ff !important; }
+.language-arrow { margin-left: 2px; font-size: 12px; }
+.language-toggle[aria-expanded="true"] .language-arrow { transform: rotate(180deg); }
+.language-options {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 100%;
+  padding: 3px;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 5px 18px #0f172a26;
+}
+.language-options button { width: 100%; margin: 2px 0; }
+.language-options button:hover { background: #eff6ff; }
+.language-options[hidden], .language-selector button[hidden] { display: none; }
+.language-selector button[aria-pressed="true"] { border-color: #2563eb; background: #eff6ff; }
+.language-selector button:focus-visible { outline: 3px solid #820ad1; outline-offset: 2px; }
+.language-selector img { display: block; width: 24px; height: 16px; object-fit: cover; border: 1px solid #cbd5e1; }
+.app-header, .page-header { padding: 20px 124px 30px 20px; }
+.app-header h1, .page-header h1 { margin: 0 0 4px; font-size: 26px; line-height: 1.2; }
+.app-header p, .page-header p { margin: 0; font-size: 14px; line-height: 1.5; }
+.login-container { padding-top: 84px; }
+.password-rules.collapsed::after { content: var(--password-valid-message, "✓ Contraseña segura"); }
+.login-status { white-space: pre-line; }
+.login-status.idle-notice { margin-top: 12px; font-size: 12px; line-height: 1.4; white-space: nowrap; }
+@media (max-width: 500px) {
+  .login-status.idle-notice { white-space: normal; }
+}
+@media (max-width: 500px) {
+  .language-selector { right: 10px; top: 10px; }
+  .language-selector button { padding: 4px; }
+}
+@media (max-width: 650px) {
+  .app-header, .page-header { padding: 54px 16px 28px; }
+  .app-header h1, .page-header h1 { font-size: 23px; }
+}

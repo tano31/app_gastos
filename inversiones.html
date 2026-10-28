@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="invest.pageTitle">Inversiones - Control de Gastos</title>
+  <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="perfil.css?v=20261018-header-icons">
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="inversiones.css?v=20261025-goal-compact">
+  <link rel="stylesheet" href="notificaciones.css">
+  <link rel="stylesheet" href="recorrido.css?v=20261025-wishlist">
+  <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
+  <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
+  <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+</head>
+<body>
+  <aside class="sidebar">
+
+    <div class="sidebar-top">
+
+      <div class="sidebar-user">
+        <img id="sidebarAvatar" src="img/user-default.svg" class="sidebar-avatar" alt="Foto de usuario" data-i18n-alt="profile.photo">
+        <strong id="sidebarUserId" class="sidebar-user-id"></strong>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </a>
+        <a href="index.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span data-i18n="nav.control">Control gastos</span>
+        </a>
+
+        <a href="inversiones.html" class="active"><i class="fa-solid fa-chart-line"></i><span data-i18n="invest.name">Inversiones</span></a>
+
+        <a href="gastos-fijos.html">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span data-i18n="fixedPage.name">Gastos fijos</span>
+        </a>
+        
+
+
+        <a href="nubank.html">
+          <img src="img/logo_nubank.png" alt="Nubank" class="sidebar-icon">
+        </a>
+
+        <a href="c6.html">
+          <img src="img/logo_c6.png" alt="C6 Bank" class="sidebar-icon">
+        </a>
+        <a href="mercado.html">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span data-i18n="market.name">Mercado</span>
+        </a>
+
+        <a href="digitalizador.html"><i class="fa-solid fa-receipt"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+        <a href="wishlist.html"><i class="fa-solid fa-lightbulb"></i><span>Wishlist</span></a>
+        <a href="configuracion.html">
+          <i class="fa-solid fa-gear"></i>
+          <span data-i18n="nav.settings">Configuración</span>
+        </a>
+
+      </nav>
+
+    </div>
+
+    <div class="sidebar-footer">
+    <button id="logoutBtn" class="logout-btn" type="button">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span data-i18n="nav.logout">Salir</span>
+    </button>
+      <p class="app-version" data-i18n="nav.version">Versión 1.1</p>
+    </div>
+
+  </aside>
+  <div class="main-content">
+    <header class="app-header">
+      <div>
+        <h1 class="page-section-title"><i class="fa-solid fa-chart-line" aria-hidden="true"></i><span data-i18n="invest.name">Inversiones</span></h1>
+        <p data-i18n="invest.subtitle">Cotización y evolución del dólar en reales brasileños.</p>
+      </div>
+    </header>
+    <main class="container investments-container">
+      <section class="panel investment-summary">
+        <div><span data-i18n="invest.quote">Dólar · USD/BRL</span><h2 id="investmentPrice">—</h2><p id="investmentUpdated"></p>
+        <div class="investment-heading">
+          <fieldset id="investmentPeriod" class="dashboard-period"><legend data-i18n="analytics.period">Período</legend>
+            <div class="dashboard-period-options">
+              <label><input type="radio" name="investmentPeriod" value="1w"><span data-i18n="invest.week">1 semana</span></label>
+              <label><input type="radio" name="investmentPeriod" value="1m"><span data-i18n="invest.month">1 mes</span></label>
+              <label><input type="radio" name="investmentPeriod" value="6m" checked><span data-i18n="invest.six">6 meses</span></label>
+              <label><input type="radio" name="investmentPeriod" value="1y"><span data-i18n="invest.year">1 año</span></label>
+            </div>
+          </fieldset>
+        </div>
+</div>
+        <div><span data-i18n="invest.change">Variación del período</span><strong id="investmentChange">—</strong></div>
+        <div class="investment-chart">
+        <div id="investmentPlot"></div>
+        </div>
+        <p id="investmentStatus" class="configuration-status" role="status"></p>
+      </section>
+      <section class="panel holdings-panel" aria-labelledby="holdingsTitle">
+        <div class="table-header holdings-header">
+          <div><h2 id="holdingsTitle" data-hold="title">Mi patrimonio</h2><p class="profile-help" data-hold="intro">Registrá tus saldos e inversiones.</p></div>
+          <div class="holdings-actions holdings-header-actions">
+            <button id="addHolding" type="button" data-hold="add">Agregar tenencia</button>
+            <p id="holdingsStatus" class="holdings-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <div id="holdingsCards" class="holdings-cards"></div>
+        <div class="holdings-summary">
+          <div class="holdings-total"><span id="holdingsTotalLabel">Patrimonio total</span><strong id="holdingsTotal" aria-label="Patrimonio total">—</strong></div>
+          <div class="holdings-total holdings-goal">
+            <span id="holdingsGoalLabel">Mi objetivo</span>
+            <div class="holdings-goal-value"><strong id="holdingsGoalValue">—</strong><button id="editHoldingsGoal" type="button" class="btn-secondary" disabled>Cargar monto</button></div>
+            <form id="holdingsGoalForm" hidden>
+              <label><span id="holdingsGoalCurrencyLabel">Moneda</span><select id="holdingsGoalCurrency"><option>BRL</option><option>USD</option><option>EUR</option><option>ARS</option></select></label>
+              <label><span id="holdingsGoalAmountLabel">Monto objetivo</span><input id="holdingsGoalAmount" type="number" min="0.01" max="1000000000000" step="0.01" required></label>
+              <button id="saveHoldingsGoal" type="submit">Guardar</button><button id="cancelHoldingsGoal" type="button" class="btn-secondary">Cancelar</button>
+            </form>
+            <p id="holdingsGoalStatus" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <form id="holdingForm" class="holdings-form" hidden>
+          <h3 id="holdingFormTitle"></h3>
+          <label><span data-hold="name">Nombre</span><input id="holdingName" list="holdingNameSuggestions" autocomplete="off" maxlength="150" required placeholder="Ej.: cuenta Nubank"><datalist id="holdingNameSuggestions"></datalist></label>
+          <label><span data-hold="kind">Clase</span><select id="holdingKind"><option value="dinero" data-hold="cash">Dinero disponible</option><option value="inversion" data-hold="investment">Inversión</option></select></label>
+          <label><span data-hold="currency">Moneda</span><select id="holdingCurrency"><option>BRL</option><option>USD</option><option>EUR</option><option>ARS</option></select></label>
+          <label><span data-hold="locationShort">Ubicación</span><input id="holdingLocation" list="holdingLocationSuggestions" autocomplete="off" maxlength="150" required placeholder="Ej.: efectivo en casa, banco o billetera"><datalist id="holdingLocationSuggestions"></datalist></label>
+          <label><span data-hold="format">Formato</span><select id="holdingFormat"><option value="digital" data-hold="digital">Digital</option><option value="fisico" data-hold="physical">Físico</option></select></label>
+          <label><span data-hold="balanceShort">Valor actual</span><input id="holdingBalance" type="number" min="0" max="1000000000000" step="0.01" required></label>
+          <label id="holdingCapitalLabel" hidden><span data-hold="capital">Capital aportado (misma moneda)</span><input id="holdingCapital" type="number" min="0" max="1000000000000" step="0.01"></label>
+          <label><span data-hold="dateShort">Fecha</span><input id="holdingDate" type="date" required></label>
+          <p class="profile-help holdings-form-help" data-hold="help">Carga manual de saldos. No crea ingresos ni gastos. El capital aportado no se suma otra vez al patrimonio.</p>
+          <div class="holdings-actions"><button id="cancelHolding" type="button" class="secondary" data-hold="cancel">Cancelar</button><button id="saveHolding" type="submit" data-hold="save">Guardar tenencia</button></div>
+        </form>
+        <div class="table-wrapper"><table class="holdings-table"><thead><tr><th data-hold="name">Tenencia</th><th data-hold="kind">Clase</th><th data-hold="locationShort">Ubicación</th><th data-hold="format">Formato</th><th data-hold="currency">Moneda</th><th data-hold="balanceShort">Valor actual</th><th data-hold="capitalShort">Capital aportado</th><th data-hold="dateShort">Fecha</th><th></th></tr></thead><tbody id="holdingsBody"></tbody></table></div>
+      </section>
+    </main>
+  </div>
+  <script src="i18next.min.js"></script>
+  <script src="translations.js?v=20261024-extremes"></script>
+  <script src="i18n.js"></script>
+  <script src="datos-cache.js?v=20261024-holdings"></script>
+  <script src="moneda.js"></script>
+  
+  <script src="sesion.js?v=20261027-fade4s-label"></script>
+  <script src="perfil.js"></script>
+  <script src="inversiones.js?v=20261024-single-line-dates"></script>
+  <script src="patrimonio.js?v=20261025-goal"></script>
+  <script src="objetivo-patrimonio.js?v=20261025-currency"></script>
+  <script src="medios-pago.js?v=20261024"></script>
+  <script src="notificaciones.js?v=20261025-independent-settings"></script>
+  <script src="asistente.js?v=20261025-wealth-goal"></script>
+  <script src="recorrido.js?v=20261025-wishlist"></script>
+  <script src="perfil-pendiente.js?v=20261024-dismissible"></script>
+  <script src="aviso-dolar.js?v=20261026-yellow"></script>
+</body>
+</html>
+
+

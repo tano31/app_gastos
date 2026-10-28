@@ -1,0 +1,739 @@
+
+/* ==========================================
+   NUBANK - CONTROL DE GASTOS
+   ========================================== */
+
+:root {
+  --bg: #f4f7fb;
+  --panel: #ffffff;
+  --text: #18202f;
+  --muted: #687385;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --nubank-purple: #820ad1;
+  --danger: #dc2626;
+  --border: #dbe3ef;
+  --sidebar-bg: #0f172a;
+  --sidebar-width: 200px;
+  --radius: 18px;
+}
+
+.label-review { margin: 20px 0; text-align: left; }
+.import-summary { margin: 20px 0; text-align: left; }
+.import-summary:empty { display: none; }
+.import-summary p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.import-summary-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin: 12px 0; }
+.import-summary-grid > div { display: grid; gap: 4px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; }
+.import-summary-grid strong { font-size: 22px; }
+.import-summary-grid span { color: var(--muted); font-size: 12px; }
+.import-summary > button { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: #eef2f8; color: #334155; }
+.label-review:empty { display: none; }
+.label-review > p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.label-review-list { max-height: 360px; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; }
+.label-review-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 1fr); align-items: center; gap: 4px 12px; padding: 6px 12px; border-bottom: 1px solid var(--border); }
+.label-review-row:last-child { border-bottom: none; }
+.label-review-row strong { overflow-wrap: anywhere; align-self: center; font-size: 14px; }
+.label-review-row span, .label-review-row small { color: var(--muted); font-size: 12px; }
+.label-review-row small { grid-column: 1 / -1; }
+.label-review-row select { width: 100%; min-width: 0; min-height: 30px; margin: 0; padding: 4px 8px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: #f8fafc; color: var(--text); }
+.label-review-row select.label-category-selected { background: #ecfdf3; border-color: #a7dfbd; color: #25633e; }
+.label-review-row select.label-category-missing { background: #fff1f2; border-color: #f2b8be; color: #9f3543; }
+.label-review-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.label-review-actions button { padding: 10px 14px; border: 0; border-radius: 8px; background: var(--primary); color: #fff; font-weight: 600; }
+.label-review-actions button:disabled { opacity: .5; cursor: wait; }
+.label-review-validation { margin: 10px 0 0; padding: 10px 12px; border: 1px solid #fca5a5; border-radius: 8px; background: #fef2f2; color: #b91c1c; font-size: 14px; line-height: 1.5; }
+.label-review-validation[hidden] { display: none; }
+@media (max-width: 550px) { .label-review-row { grid-template-columns: minmax(0, 1fr); } }
+
+.import-user-field {
+  margin: 24px 0;
+  text-align: left;
+}
+.import-user-field label { display: block; margin-bottom: 8px; font-weight: 600; }
+.import-user-field select {
+  width: 100%; padding: 12px; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--panel); color: var(--text); font-size: 16px;
+}
+.import-user-field p { color: var(--danger); font-size: 14px; }
+
+/* ==========================================
+   ESTILOS GENERALES
+   ========================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ==========================================
+   BARRA LATERAL
+   MISMAS MEDIDAS QUE EL DASHBOARD
+   ========================================== */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  width: var(--sidebar-width);
+  height: 100vh;
+  height: 100dvh;
+
+  background: var(--sidebar-bg);
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  z-index: 1000;
+}
+
+/* Logo principal */
+
+.sidebar-logo {
+  width: 84px;
+  height: auto;
+
+  margin: 18px auto;
+
+  display: block;
+  object-fit: contain;
+}
+
+/* Compatibilidad con HTML anterior */
+
+.sidebar-brand {
+  width: 100%;
+  display: block;
+}
+
+.sidebar-brand img {
+  width: 84px;
+  height: auto;
+
+  margin: 18px auto;
+
+  display: block;
+  object-fit: contain;
+}
+
+/* Navegación lateral */
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  padding: 12px;
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  min-height: 40px;
+  font-size: 14px;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  border-radius: 10px;
+
+  transition: background 0.25s ease;
+}
+
+.sidebar nav a:hover {
+  background: #1e293b;
+}
+
+.sidebar nav a.active {
+  background: var(--primary);
+}
+
+/* Íconos del menú */
+
+.sidebar i {
+  width: 20px;
+  text-align: center;
+}
+
+/* Logo Nubank del menú lateral */
+
+.sidebar nav a img.nubank-logo,
+.sidebar nav a img.sidebar-icon {
+  width: 72px;
+  height: 28px;
+
+  min-width: 72px;
+  max-width: 72px;
+
+  min-height: 28px;
+  max-height: 28px;
+
+  object-fit: contain;
+  object-position: left center;
+
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   BOTÓN SALIR
+   ========================================== */
+
+.sidebar-logout,
+.logout-btn {
+  margin: 12px;
+  padding: 8px 10px;
+
+  min-height: 36px;
+
+  background: var(--danger);
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  cursor: pointer;
+}
+
+.sidebar-logout:hover,
+.logout-btn:hover {
+  filter: brightness(0.95);
+}
+
+/* ==========================================
+   CONTENIDO PRINCIPAL
+   ========================================== */
+
+.app-content,
+.main-content {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================
+   ENCABEZADO AZUL
+   ========================================== */
+
+.page-header,
+.app-header {
+  background: linear-gradient(
+    135deg,
+    #1d4ed8,
+    #2563eb
+  );
+
+  color: white;
+
+  padding: 30px 24px;
+
+  flex-shrink: 0;
+}
+
+.page-header h1,
+.app-header h1 {
+  margin: 0 0 8px;
+
+  font-size: 36px;
+  line-height: 1.2;
+}
+
+.page-header p,
+.app-header p {
+  margin: 0;
+
+  opacity: 0.9;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   ÁREA CENTRAL DE IMPORTACIÓN
+   ========================================== */
+
+.import-area {
+  flex: 1;
+
+  width: 100%;
+  min-height: 0;
+
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================
+   TARJETA BLANCA
+   ========================================== */
+
+.import-card {
+  width: 100%;
+  max-width: 600px;
+
+  padding: 28px 36px;
+
+  background: var(--panel);
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+
+  box-shadow:
+    0 15px 40px rgba(15, 23, 42, 0.08);
+
+  text-align: center;
+
+  margin: auto;
+}
+
+/* ==========================================
+   LOGO VIOLETA NUBANK
+   ========================================== */
+
+/*
+  Reemplaza el contenedor violeta anterior
+  por un contenedor transparente.
+*/
+
+.import-icon {
+  width: 100px;
+  height: 75px;
+
+  margin: 0 auto 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+
+  overflow: visible;
+}
+
+/* Imagen del logo Nubank */
+
+.import-nubank-logo {
+  width: 100%;
+  height: 100%;
+
+  max-width: 100px;
+  max-height: 75px;
+
+  object-fit: contain;
+  object-position: center;
+
+  display: block;
+}
+
+/* ==========================================
+   TÍTULO Y DESCRIPCIÓN
+   ========================================== */
+
+.import-card h2 {
+  margin: 0 0 8px;
+
+  font-size: 26px;
+  line-height: 1.3;
+
+  color: var(--text);
+}
+
+.import-description {
+  margin: 0 0 20px;
+
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   ZONA DE CARGA CSV
+   ========================================== */
+
+.drop-zone {
+  padding: 24px 20px;
+
+  border: 2px dashed #b9c8df;
+  border-radius: 18px;
+
+  background: #f8faff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Estado al arrastrar un archivo */
+
+.drop-zone.drag-over {
+  border-color: var(--primary);
+  background: #eff6ff;
+}
+
+/* Ícono de nube */
+
+.drop-zone > i {
+  font-size: 30px;
+  color: #64748b;
+}
+
+/* Texto principal */
+
+.drop-zone p {
+  margin: 0;
+
+  color: #334155;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Separador "o" */
+
+.drop-zone > span {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* ==========================================
+   BOTÓN SELECCIONAR ARCHIVO
+   ========================================== */
+
+.select-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 22px;
+
+  background: var(--primary);
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.select-button:hover {
+  background: var(--primary-hover);
+}
+
+.select-button i {
+  font-size: 16px;
+}
+
+/* Input de archivo oculto */
+
+#csvFile {
+  display: none;
+}
+
+/* ==========================================
+   ARCHIVO SELECCIONADO
+   ========================================== */
+
+.selected-file {
+  margin-top: 18px;
+  padding: 12px 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: #f0fdf4;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+
+  color: #166534;
+}
+
+.selected-file[hidden] {
+  display: none;
+}
+
+.selected-file > i {
+  font-size: 22px;
+  color: #16a34a;
+}
+
+.selected-file span {
+  flex: 1;
+
+  overflow-wrap: anywhere;
+  text-align: left;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Botón quitar archivo */
+
+.selected-file button {
+  padding: 6px;
+
+  background: transparent;
+  border: none;
+
+  color: #64748b;
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+.selected-file button:hover {
+  color: var(--danger);
+}
+
+/* ==========================================
+   MENSAJES DE ESTADO
+   ========================================== */
+
+.file-status {
+  margin: 14px 0 0;
+
+  color: #166534;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.file-status:empty {
+  display: none;
+}
+
+.file-status.error {
+  color: var(--danger);
+}
+
+/* Texto inferior */
+
+.file-help {
+  margin: 14px 0 0;
+
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+   ========================================== */
+
+.sr-only {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  padding: 0;
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+
+  border: 0;
+}
+
+/* ==========================================
+   PANTALLAS DE MENOR ALTURA
+   ========================================== */
+
+@media (max-height: 800px) {
+
+  .page-header,
+  .app-header {
+    padding: 22px 24px;
+  }
+
+  .page-header h1,
+  .app-header h1 {
+    font-size: 30px;
+  }
+
+  .import-area {
+    padding: 16px 24px;
+  }
+
+  .import-card {
+    padding: 20px 28px;
+  }
+
+  .import-icon {
+    width: 85px;
+    height: 60px;
+
+    margin-bottom: 10px;
+  }
+
+  .import-nubank-logo {
+    max-width: 85px;
+    max-height: 60px;
+  }
+
+  .import-card h2 {
+    font-size: 23px;
+    margin-bottom: 6px;
+  }
+
+  .import-description {
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .drop-zone {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .drop-zone > i {
+    font-size: 25px;
+  }
+
+  .select-button {
+    padding: 10px 18px;
+  }
+
+  .file-help {
+    margin-top: 10px;
+  }
+}
+
+/* ==========================================
+   PANTALLAS ESTRECHAS
+   ========================================== */
+
+@media (max-width: 850px) {
+
+  .page-header h1,
+  .app-header h1 {
+    font-size: 28px;
+  }
+
+  .import-area {
+    padding: 20px 16px;
+  }
+
+  .import-card {
+    padding: 24px 18px;
+  }
+
+  .import-card h2 {
+    font-size: 23px;
+  }
+
+  .drop-zone {
+    padding: 20px 14px;
+  }
+}
+
+/* ==========================================
+   PANTALLAS MUY PEQUEÑAS
+   ========================================== */
+
+@media (max-width: 500px) {
+
+  .import-card {
+    padding: 20px 14px;
+  }
+
+  .import-icon {
+    width: 75px;
+    height: 55px;
+  }
+
+  .import-nubank-logo {
+    max-width: 75px;
+    max-height: 55px;
+  }
+
+  .import-description {
+    font-size: 14px;
+  }
+
+  .select-button {
+    width: 100%;
+  }
+
+  .drop-zone p {
+    font-size: 13px;
+  }
+}
+
+
+/* ==========================================
+   VISTA PREVIA E IMPORTACIÓN NUBANK
+   ========================================== */
+.preview-section { margin-top: 24px; text-align: left; }
+.preview-section[hidden] { display: none; }
+.preview-section h3 { margin: 0 0 8px; font-size: 19px; }
+.preview-summary { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+.preview-table-wrap { max-height: 340px; overflow: auto; border: 1px solid var(--border); border-radius: 12px; }
+.preview-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.preview-table th, .preview-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
+.preview-table th { position: sticky; top: 0; background: #f8faff; }
+.preview-table th:last-child, .preview-table td:last-child { text-align: right; white-space: nowrap; }
+.preview-table td:nth-child(2) { overflow-wrap: anywhere; }
+.preview-table .negative { color: var(--danger); }
+.preview-note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.import-button { width: 100%; margin-top: 10px; padding: 13px; background: var(--nubank-purple); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; }
+.import-button:hover:not(:disabled) { filter: brightness(.92); }
+.import-button:disabled { opacity: .55; cursor: not-allowed; }
+.file-status { overflow-wrap: anywhere; }
+@media (max-width: 500px) { .preview-table { font-size: 12px; } .preview-table th, .preview-table td { padding: 7px 5px; } }

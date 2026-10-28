@@ -1,0 +1,81 @@
+.investment-summary { display: grid; grid-template-columns: minmax(250px,.85fr) minmax(150px,.5fr) minmax(280px,1.65fr); gap: 6px 18px; align-items: center; margin-bottom: 16px; padding: 16px 20px; }
+.investment-summary > div > span { color: var(--muted); font-size: 14px; }
+.investment-summary h2 { margin: 4px 0; font-size: clamp(26px,2.5vw,34px); }
+.investment-summary p { margin: 0; font-size: 13px; color: var(--muted); }
+.investment-summary strong { display: block; margin-top: 8px; font-size: 24px; }
+.investment-summary .positive { color: #15803d; }
+.investment-summary .negative { color: #dc2626; }
+.investment-heading { display: flex; flex-direction: column; gap: 0; align-items: flex-start; margin-top: 8px; }
+.investment-heading h2 { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
+.investment-heading .dashboard-period-options { flex-wrap: wrap; }
+.investment-summary { position: relative; }
+#investmentUpdated { min-height: 20px; }
+.investment-summary > .configuration-status { position: absolute; left: 20px; right: 20px; bottom: 1px; margin: 0; min-height: 0; font-size: 11px; line-height: 14px; max-height: 42px; overflow-y: auto; }
+.investment-summary > .configuration-status:empty { display: none; }
+.investment-chart { min-width: 0; }
+.investment-heading .dashboard-period { padding: 0; gap: 4px; font-size: 11px; }
+.investment-heading .dashboard-period legend { display: none; }
+.investment-heading .dashboard-period-options { gap: 2px; }
+.investment-heading .dashboard-period label span { font-size: 11px; padding: 3px 5px; }
+#investmentPlot { margin-top: 0; height: 130px; min-width: 0; }
+#investmentPlot svg { display: block; width: 100%; height: 100%; }
+.investment-summary .investment-details { grid-column: 1 / -1; font-size: 12px; margin: 0; }
+.investment-details .table-wrapper { max-height: 280px; overflow: auto; margin-top: 12px; }
+.investment-details > a { font-size: 12px; }
+@media (max-width: 1200px) {
+  .investment-summary { grid-template-columns: minmax(180px,1fr) minmax(140px,.65fr); }
+  .investment-chart { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .investment-summary { grid-template-columns: minmax(0,1fr); }
+  .investment-chart { grid-column: 1; }
+}
+.investment-note { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.investment-chart > a { font-size: 13px; }
+.holdings-panel { margin-top: 20px; }
+.holdings-header { flex-wrap: wrap; align-items: flex-start; }
+.holdings-header h2 { margin: 0 0 6px; font-size: 24px; }
+.holdings-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.holdings-actions .secondary { margin: 0; width: auto; }
+.holdings-header-actions { display: grid; justify-items: end; gap: 4px; }
+.holdings-status { width: min(320px,70vw); height: 18px; min-height: 18px; margin: 0; overflow-y: auto; color: var(--muted); font-size: 12px; line-height: 18px; text-align: right; }
+.holdings-status:empty { visibility: hidden; }
+.holdings-cards { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin: 16px 0; }
+.holdings-cards article { display: grid; align-content: start; gap: 7px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: #f8faff; min-width: 0; }
+.holdings-cards .holding-card-brl { background: #edf5ee; border-color: #d4e5d7; }
+.holdings-cards .holding-card-usd { background: #dceadf; border-color: #bfd5c5; }
+.holdings-cards .holding-card-eur { background: #dfe9f4; border-color: #c4d4e7; }
+.holdings-cards .holding-card-ars { background: #eff4fa; border-color: #d6e2ef; }
+.holdings-cards span { color: var(--muted); font-size: 13px; }
+.holdings-cards strong { font-size: clamp(17px,1.5vw,23px); overflow-wrap: anywhere; }
+.holdings-cards small { color: #64748b; font-size: 12px; }
+.holdings-total { padding: 14px 16px; background: #eef6ff; border-radius: 12px; margin-bottom: 16px; }
+.holdings-total > span { font-size: 13px; color: var(--muted); }
+.holdings-total strong { display: block; font-size: 26px; margin: 6px 0; }
+.holdings-form { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; padding: 18px; border: 1px solid var(--border); border-radius: 14px; margin: 16px 0; }
+.holdings-form[hidden], .holdings-form label[hidden] { display: none; }
+.holdings-form h3, .holdings-form-help, .holdings-form > .holdings-actions { grid-column: 1 / -1; margin: 0; }
+.holdings-form label { min-width: 0; font-size: 13px; }
+.holdings-form input, .holdings-form select { width: 100%; min-width: 0; }
+.holdings-table { font-size: 13px; }
+.holdings-table th, .holdings-table td { padding: 8px; }
+.holdings-table td:nth-child(6), .holdings-table td:nth-child(7) { text-align: right; font-variant-numeric: tabular-nums; }
+.holdings-table button { min-height: 30px; padding: 5px 9px; font-size: 12px; }
+.holdings-panel button:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 1100px) { .holdings-cards { grid-template-columns: repeat(2,minmax(0,1fr)); }.holdings-form { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 600px) { .holdings-cards, .holdings-form { grid-template-columns: minmax(0,1fr); }.holdings-total strong { overflow-wrap: anywhere; } }
+.holdings-summary { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px; }
+.holdings-summary .holdings-total { margin-bottom:0;min-width:0;padding:12px 16px; }
+.holdings-summary .holdings-total strong { margin:4px 0 0; }
+.holdings-goal-value { display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:36px; }
+.holdings-goal-value strong { overflow-wrap:anywhere; }
+.holdings-goal button { width:auto;min-height:32px;margin:0;padding:6px 10px;font-size:13px; }
+#holdingsGoalForm { display:grid;grid-template-columns:90px minmax(100px,1fr) auto auto;gap:8px;align-items:end;margin-top:12px; }
+#holdingsGoalForm[hidden] { display:none; }
+#holdingsGoalForm label { font-size:12px;min-width:0; }
+#holdingsGoalForm input,#holdingsGoalForm select { width:100%;min-width:0; }
+#holdingsGoalStatus { margin:0;font-size:12px;color:#64748b; }
+#holdingsGoalStatus:empty { display:none; }
+#holdingsGoalStatus:not(:empty) { margin-top:8px; }
+#holdingsGoalStatus.error { color:#dc2626; }
+@media(max-width:700px) { .holdings-summary { grid-template-columns:1fr; } #holdingsGoalForm { grid-template-columns:90px minmax(0,1fr); } }

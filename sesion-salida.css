@@ -1,0 +1,6 @@
+body.session-leaving { overflow:hidden; }
+body.session-leaving > :not(.logout-transition):not(script):not(style):not(link) { animation:platformSignOut 4s linear both;pointer-events:none; }
+/* Bloquea interacciones sin agregar una capa de color sobre la plataforma. */
+.logout-transition { position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:transparent;cursor:wait; }
+.logout-transition span { padding:14px 22px;border:1px solid #dbe5f2;border-radius:14px;background:#ffffffeb;color:#334155;font:500 15px/1.5 Arial,sans-serif;box-shadow:0 8px 32px #0f172a12; }
+@keyframes platformSignOut { from { opacity:1; } to { opacity:0; } }

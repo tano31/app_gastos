@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="nav.control">Control gastos</title>
+  <link rel="stylesheet" href="styles.css?v=20261024-movement-currencies" />
+  <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="perfil.css?v=20261018-header-icons">
+  <link rel="stylesheet" href="notificaciones.css">
+  <link rel="stylesheet" href="carga-masiva.css?v=20261024">
+  <link rel="stylesheet" href="recorrido.css?v=20261025-wishlist">
+  <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
+  <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
+  <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+</head>
+
+<body>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-top">
+
+      <div class="sidebar-user">
+        <img id="sidebarAvatar" src="img/user-default.svg" class="sidebar-avatar" alt="Foto de usuario" data-i18n-alt="profile.photo">
+        <strong id="sidebarUserId" class="sidebar-user-id"></strong>
+      </div>
+
+      <nav>
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </a>
+        <a href="index.html" class="active">
+          <i class="fa-solid fa-wallet"></i>
+          <span data-i18n="nav.control">Control gastos</span>
+        </a>
+
+        <a href="inversiones.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span data-i18n="invest.name">Inversiones</span>
+        </a>
+
+        <a href="gastos-fijos.html">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span data-i18n="fixedPage.name">Gastos fijos</span>
+        </a>
+        
+
+
+        <a href="nubank.html">
+           <img src="img/logo_nubank.png" alt="Nubank" class="sidebar-icon">
+        </a>
+
+        <a href="c6.html">
+          <img src="img/logo_c6.png" alt="C6 Bank" class="sidebar-icon">
+        </a>
+        <a href="mercado.html">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span data-i18n="market.name">Mercado</span>
+        </a>
+
+        <a href="digitalizador.html"><i class="fa-solid fa-receipt"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+        <a href="wishlist.html"><i class="fa-solid fa-lightbulb"></i><span>Wishlist</span></a>
+        <a href="configuracion.html">
+          <i class="fa-solid fa-gear"></i>
+          <span data-i18n="nav.settings">Configuración</span>
+        </a>
+
+      </nav>
+
+    </div>
+
+    <div class="sidebar-footer">
+    <button id="logoutBtn" class="logout-btn">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span data-i18n="nav.logout">Salir</span>
+    </button>
+      <p class="app-version" data-i18n="nav.version">Versión 1.1</p>
+    </div>
+
+  </aside>
+  <div class="main-content">
+
+    <header class="app-header">
+      <div>
+        <h1 class="page-section-title"><i class="fa-solid fa-wallet" aria-hidden="true"></i><span data-i18n="nav.control">Control gastos</span></h1>
+        <p data-i18n="app.subtitle">Registrá ingresos, gastos fijos, variables y ahorro.</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="cards">
+
+
+
+
+
+        <!---->
+        <article class="card income">
+          <i class="fa-solid fa-wallet card-icon ingreso"></i>
+          <span data-i18n="cards.income">Ingresos</span>
+          <strong id="totalIngresos">R$0,00</strong>
+        </article>
+        <article class="card expense">
+          <i class="fa-solid fa-credit-card card-icon gasto"></i>
+          <span data-i18n="cards.expenses">Gastos</span>
+          <strong id="totalGastos">R$0,00</strong>
+        </article>
+        <article class="card saving">
+          <i class="fa-solid fa-piggy-bank card-icon ahorro"></i>
+          <span data-i18n="cards.savings">Ahorro registrado</span>
+          <strong id="totalAhorro">R$0,00</strong>
+        </article>
+        <article class="card balance">
+          <i class="fa-solid fa-sack-dollar card-icon saldo"></i>
+          <span data-i18n="cards.available">Disponible</span>
+          <strong id="saldoDisponible">R$0,00</strong>
+        </article>
+
+      </section>
+
+      <section class="panel movement-entry">
+        <form id="movementForm" class="form movement-form">
+          <div class="movement-entry-header">
+            <h2 data-i18n="movement.new">Nuevo movimiento</h2>
+            <details id="movementMonths" class="movement-months">
+              <summary id="movementMonthsSummary">Mes actual</summary>
+              <div id="movementMonthOptions" class="movement-month-options" role="group" aria-label="Meses" data-i18n-aria-label="field.month"></div>
+            </details>
+          </div>
+
+          <label><span data-i18n="field.date">Fecha</span><input type="date" id="fecha" required />
+          </label>
+
+          <label><span data-i18n="field.description">Descripción</span><input type="text" id="descripcion" placeholder="Ej: Carrefour" data-i18n-placeholder="movement.example" required />
+          </label>
+
+          <label><span data-i18n="field.type">Tipo</span><select id="tipo" required>
+              <option value="gasto_variable">Gasto variable</option>
+              <option value="gasto_fijo">Gasto fijo</option>
+              <option value="ingreso">Ingreso</option>
+              <option value="ahorro">Ahorro</option>
+            </select>
+          </label>
+
+          <label><span data-i18n="field.category">Categoría</span><select id="categoria" required>
+              <option value="Supermercado">Supermercado</option>
+              <option value="Alquiler">Alquiler</option>
+              <option value="Servicios">Servicios</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Comida">Comida</option>
+              <option value="Salud">Salud</option>
+              <option value="Ocio">Ocio</option>
+              <option value="Sueldo">Sueldo</option>
+              <option value="Ahorro">Ahorro</option>
+              <option value="Otro">Otro</option>
+              <option value="Desconocido">Desconocido</option>
+            </select>
+          </label>
+
+          <label id="manualFixedPeriodLabel" hidden><span data-i18n="fixedPage.paymentPeriod">Período a pagar</span><input id="manualFixedPeriod" type="month"></label>
+          <label><span data-i18n="field.amount">Monto</span><div class="movement-amount-input"><select id="movementCurrency" aria-label="Moneda del movimiento" data-i18n-aria-label="analytics.currency"><option value="BRL">BRL</option><option value="ARS">ARS</option><option value="USD">USD</option></select><input type="number" id="monto" min="0" step="0.01" placeholder="0.00" required /></div>
+          </label>
+
+          <label><span data-i18n="field.payment">Medio de pago</span><select id="medioPago">
+              <option value="Efectivo">Efectivo</option>
+              <option value="Débito">Débito</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Transferencia">Pix</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </label>
+
+          <div class="movement-submit-row">
+          <details id="bulkMovementMenu" class="bulk-movement-menu"><summary>Carga Masiva</summary><div class="bulk-movement-actions"><button id="downloadMovementTemplate" type="button" class="btn-secondary">Descargar plantilla Excel</button><button id="openBulkMovements" type="button" class="btn-secondary">Cargar archivo Excel</button></div></details>
+          <div id="movementsLoading" class="movements-loading" role="progressbar" aria-label="Cargando movimientos" data-i18n-aria-label="movement.loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.6-1L20 9M4 15l2.3 3A7 7 0 0 0 17.9 17"/></svg>
+            <span id="movementsLoadingPercent">0%</span>
+          </div>
+          <button type="submit" data-i18n="movement.add">Agregar movimiento</button>
+          </div>
+          <p id="statusMessage" class="status"></p>
+
+
+        </form>
+
+        <section id="bulkMovementPanel" class="bulk-movement-panel" hidden>
+          <h3>Carga Masiva</h3>
+          <p>Descargá la plantilla, completá tus movimientos y seleccioná el archivo para revisarlos antes de guardar. Hasta 200 movimientos por archivo.</p>
+          <label>Archivo Excel<input id="bulkMovementFile" type="file" accept=".xlsx"></label>
+          <p id="bulkMovementStatus" role="status" aria-live="polite"></p>
+          <div class="bulk-movement-table"><table><thead><tr><th>Fila</th><th>Fecha</th><th>Descripción</th><th>Tipo</th><th>Categoría</th><th>Moneda</th><th>Monto</th><th>Medio de pago</th></tr></thead><tbody id="bulkMovementPreview"></tbody></table></div>
+          <div class="bulk-movement-footer"><button id="saveBulkMovements" type="button" disabled>Guardar movimientos</button><button id="closeBulkMovements" type="button" class="btn-secondary">Cerrar</button></div>
+        </section>
+
+      </section>
+
+      <section class="panel movement-list">
+        <div class="table-header">
+          <h2 data-i18n="movement.list">Movimientos</h2>
+          <div class="movement-list-actions">
+            <button id="deleteSelectedMovements" class="danger" type="button" data-i18n="movement.deleteSelected" hidden>Eliminar seleccionados</button>
+            <button id="exportCsv" class="secondary movement-export" data-i18n="csv.export">Exportar CSV</button>
+          </div>
+        </div>
+        <p id="movementDeleteStatus" class="status movement-delete-status" role="status" aria-live="polite"></p>
+        <div class="table-wrapper">
+          <table class="movement-list-table">
+            <colgroup>
+              <col class="movement-col-select"><col class="movement-col-date">
+              <col class="movement-col-description"><col class="movement-col-type">
+              <col class="movement-col-category"><col class="movement-col-method">
+              <col class="movement-col-amount"><col class="movement-col-actions">
+            </colgroup>
+            <thead>
+              <tr>
+                <th><input id="selectAllMovements" class="fixed-check" type="checkbox" aria-label="Seleccionar todos" data-i18n-aria-label="fixedPage.selectAll"></th>
+                <th data-i18n="field.date">Fecha</th>
+                <th data-i18n="field.description">Descripción</th>
+                <th data-i18n="field.type">Tipo</th>
+                <th data-i18n="field.category">Categoría</th>
+                <th data-i18n="field.method">Medio</th>
+                <th data-i18n="field.amount">Monto</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="movementTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div id="editMovementModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="editMovementTitle">
+      <form id="editMovementForm" class="modal-box">
+        <h3 id="editMovementTitle" data-i18n="movement.editDetails">Editar movimiento</h3>
+        <label><span data-i18n="field.description">Descripción</span><input id="editMovementDescription" maxlength="500" required></label>
+        <label><span data-i18n="field.category">Categoría</span><select id="editMovementCategory" required></select></label>
+        <p id="editMovementStatus" role="status"></p>
+        <div class="modal-actions"><button id="cancelEditMovement" type="button" class="btn-secondary" data-i18n="common.cancel">Cancelar</button><button id="saveEditMovement" type="submit" data-i18n="profile.saveChanges">Guardar cambios</button></div>
+      </form>
+    </div>
+    <script src="i18next.min.js"></script>
+  <script src="translations.js?v=20261024-movement-delete"></script>
+  <script src="i18n.js"></script>
+  <script src="datos-cache.js?v=20261024"></script>
+  <script src="moneda.js"></script>
+  
+  <script src="sesion.js?v=20261027-fade4s-label"></script>
+  <script src="app.js?v=20261024-movement-currencies"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="excel-movimientos.js?v=20261024"></script>
+  <script src="carga-masiva.js?v=20261024"></script>
+  <script src="categorias-opciones.js"></script>
+  <script src="movimientos-edicion.js"></script>
+  <script src="perfil.js"></script>
+  </div>
+
+  <script src="medios-pago.js?v=20261024"></script>
+  <script src="notificaciones.js?v=20261025-independent-settings"></script>
+  <script src="asistente.js?v=20261025-wealth-goal"></script>
+  <script src="recorrido.js?v=20261025-wishlist"></script>
+  <script src="perfil-pendiente.js?v=20261024-dismissible"></script>
+  <script src="aviso-dolar.js?v=20261026-yellow"></script>
+</body>
+
+
+
+</html>

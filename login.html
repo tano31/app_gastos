@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title data-i18n="login.title">Iniciar sesión - Control de Gastos</title>
+
+  <style>html,body.login-page{background:#031c26}body.login-page::before{background-image:none}</style>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="login-video.css?v=20261027-translucent72">
+  <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+</head>
+
+<body class="login-page">
+
+  <video class="login-background-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+    <source src="img/5200-183786525_medium.mp4" type="video/mp4">
+  </video>
+
+  <main class="login-container">
+
+    <section class="login-card">
+
+      <div class="login-logo">
+        <img src="img/icono_fondo_translucido.png" alt="Control de Gastos" data-i18n-alt="app.title">
+      </div>
+
+      <!-- LOGIN -->
+
+      <div id="loginView">
+
+        <h1 data-i18n="login.welcome">Bienvenido</h1>
+
+        <p class="login-subtitle" data-i18n="login.subtitle">
+          Ingresá para administrar tus gastos.
+        </p>
+
+        <form id="loginForm" class="login-form">
+
+          <label for="loginUser"><span data-i18n="field.user">Usuario</span></label>
+
+          <input id="loginUser" type="text" placeholder="Email, documento o id" data-i18n-placeholder="login.userPlaceholder" autocomplete="username" required>
+
+          <label for="loginPassword"><span data-i18n="field.password">Contraseña</span></label>
+
+          
+          <div class="password-wrapper">
+
+            <input id="loginPassword" type="password" placeholder="Ingresá tu contraseña" data-i18n-placeholder="login.passwordPlaceholder"
+              autocomplete="current-password" required>
+
+            <button id="togglePassword" class="password-toggle" type="button">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+
+          </div>
+
+          <label class="remember-session" for="rememberSession">
+            <input id="rememberSession" type="checkbox" checked>
+            <span data-i18n="login.remember">Mantener sesión iniciada</span>
+          </label>
+          <button id="loginButton" class="login-button" type="submit" data-i18n="login.submit">
+            Iniciar sesión
+          </button>
+
+        </form>
+
+          <div id="loginLoader" class="login-loader hidden" aria-live="polite">
+            <div class="spinner"></div>
+            <span data-i18n="login.validating">Validando acceso...</span>
+          </div>
+
+          <p id="loginStatus" class="login-status"></p>
+          <button id="resendVerificationButton" class="link-button" type="button">Reenviar correo de validación</button>
+
+        <div class="login-register">
+
+          <span data-i18n="login.noAccount">¿No tenés una cuenta?</span>
+
+          <button id="showRegisterButton" class="link-button" type="button" data-i18n="register.user">
+            Crear usuario
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- REGISTRO -->
+
+      <div id="registerView" class="register-view hidden">
+
+        <h1 data-i18n="register.user">Crear usuario</h1>
+
+        <p class="login-subtitle" data-i18n="register.subtitle">
+          Completá tus datos para crear una cuenta.
+        </p>
+
+        <form id="registerForm" class="login-form">
+
+          <div class="register-field register-field-registerUserId"><label for="registerUserId"><span data-i18n="field.user">Usuario</span></label><input id="registerUserId" type="text" placeholder="Ej: hstiliano" data-i18n-placeholder="register.usernameExample" required></div>
+
+
+          <div class="register-field register-field-registerDocument"><label for="registerDocument"><span data-i18n="field.document">Documento</span></label><input id="registerDocument" type="text" placeholder="Ej: 11222333" data-i18n-placeholder="register.documentExample" required></div>
+
+
+          <div class="register-field register-field-registerEmail"><label for="registerEmail">
+            E-mail
+          </label><input id="registerEmail" type="email" placeholder="usuario@email.com" required></div>
+
+
+
+
+
+
+          <div class="register-field register-field-registerPassword"><label for="registerPassword"><span data-i18n="field.password">Contraseña</span></label><div class="password-wrapper">
+            <input id="registerPassword" type="password" placeholder="Contraseña" data-i18n-placeholder="field.password" required>
+            <button id="toggleRegisterPassword" class="password-toggle" type="button" aria-label="Mostrar contraseñas" data-i18n-aria-label="password.showBoth" aria-controls="registerPassword registerPasswordConfirm" aria-pressed="false">
+              <i class="fa-regular fa-eye" aria-hidden="true"></i>
+            </button>
+          </div></div>
+
+<div class="password-rules">
+
+            <p id="ruleLength">
+              <i class="fa-regular fa-circle"></i><span data-i18n="password.length">Mínimo 8 caracteres</span></p>
+
+            <p id="ruleUpper">
+              <i class="fa-regular fa-circle"></i><span data-i18n="password.upper">Una letra mayúscula</span></p>
+
+            <p id="ruleLower">
+              <i class="fa-regular fa-circle"></i><span data-i18n="password.lower">Una letra minúscula</span></p>
+
+            <p id="ruleNumber">
+              <i class="fa-regular fa-circle"></i><span data-i18n="password.number">Un número</span></p>
+
+            <p id="ruleSpecial">
+              <i class="fa-regular fa-circle"></i><span data-i18n="password.special">Un carácter especial</span></p>
+
+          </div>
+
+
+
+
+          <div class="register-field register-field-registerPasswordConfirm"><label for="registerPasswordConfirm"><span data-i18n="password.repeat">Repetir contraseña</span></label><input id="registerPasswordConfirm" type="password" placeholder="Repetí la contraseña" data-i18n-placeholder="password.repeatPlaceholder" required></div>
+
+
+          <button id="registerButton" class="login-button" type="submit" data-i18n="register.submit">
+            Crear cuenta
+          </button>
+
+          <p id="registerStatus" class="login-status"></p>
+
+        </form>
+
+
+        <button id="backToLoginButton" class="link-button" type="button">
+          <i class="fa-solid fa-arrow-left"></i><span data-i18n="login.back">Volver al inicio de sesión</span></button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="i18next.min.js"></script>
+  <script src="translations.js"></script>
+  <script src="i18n.js"></script>
+  <script src="sesion.js?v=20261027-fade4s-label"></script>
+  <script src="credenciales.js"></script>
+  <script src="login.js?v=20261024-password-change"></script>
+
+</body>
+
+</html>

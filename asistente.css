@@ -1,0 +1,48 @@
+.expense-assistant-launch { position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));z-index:1200;display:grid;place-items:center;width:50px;height:50px;min-height:0;padding:10px;margin:0;border:0;border-radius:50%;background:transparent;color:#fff;box-shadow:none;cursor:pointer; }
+.expense-assistant-launch { padding:5px; }
+.expense-assistant-launch picture,.expense-assistant-launch img { display:block;width:38px;height:38px;object-fit:contain; }
+.expense-assistant-launch:hover { background:transparent;box-shadow:none; }
+.expense-assistant-launch:focus-visible,.expense-assistant button:focus-visible,.expense-assistant textarea:focus-visible { outline:3px solid #d8b4fe;outline-offset:3px; }
+.expense-assistant[hidden] { display:none; }
+.expense-assistant { position:fixed;right:max(20px,env(safe-area-inset-right));bottom:82px;z-index:1200;display:flex;flex-direction:column;width:min(370px,calc(100vw - 24px));max-height:min(640px,calc(100dvh - 105px));overflow:hidden;border:1px solid #e6d7ef;border-radius:20px;background:#fff;color:#18202f;box-shadow:0 14px 60px #6b217c26;font-size:13px; }
+.expense-assistant * { box-sizing:border-box; }
+.expense-assistant-header { display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;background:linear-gradient(120deg,#f5edfc,#fceffc);border-bottom:1px solid #e9d5f2; }
+.expense-assistant-header h2 { margin:0;font-size:16px; }
+.expense-assistant button { width:auto;min-height:32px;margin:0;border:0;cursor:pointer;font-family:inherit; }
+.expense-assistant-close { padding:2px 8px;background:transparent;color:#526079;font-size:24px;line-height:1; }
+.expense-assistant-period { display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid #edf1f5; }
+.expense-assistant-period[hidden] { display:none; }
+.expense-assistant-period-choice { flex-shrink:0;padding:12px;border:1px solid #e8d5f2;border-radius:13px;background:#faf5ff; }
+.expense-assistant-period-choice p { margin:0 0 10px;font-size:13px;line-height:1.5; }
+.expense-assistant-period-actions { display:flex;flex-wrap:wrap;gap:6px; }
+.expense-assistant-period-choice button { padding:7px 10px;border-radius:9px;background:#9333b6;color:#fff;font-size:12px; }
+.expense-assistant-period-actions button:last-child { background:#f1e8f7;color:#725480; }
+.expense-assistant-dates { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px; }
+.expense-assistant-dates label { min-width:0;margin:0;font-size:12px; }
+.expense-assistant-dates input { min-width:0;width:100%;min-height:36px;margin:4px 0 0;padding:6px;border:1px solid #e6d7ef;border-radius:8px;font:inherit; }
+.expense-assistant-dates button { grid-column:1/-1; }
+.expense-assistant-period label { display:flex;align-items:center;gap:8px;margin:0;font-size:12px; }
+.expense-assistant-period input { width:150px;min-height:32px;margin:0;padding:5px 7px;font:inherit;border-radius:8px; }
+.expense-assistant-currency { color:#806a8d;font-size:11px;font-weight:700; }
+.expense-assistant-log { min-height:100px;overflow-y:auto;overscroll-behavior:contain;padding:14px;display:flex;flex-direction:column;gap:10px; }
+.expense-assistant-message { max-width:96%;margin:0;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:13px;background:#f7f0fb;line-height:1.55;font-size:13px;flex-shrink:0; }
+.expense-assistant-message.user { align-self:flex-end;background:#9333b6;color:#fff; }
+.expense-assistant-message.pending { color:#7e22a0;background:#faf0ff; }
+.expense-assistant-quick { display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 14px 10px; }
+.expense-assistant-quick button { min-width:0;padding:8px;text-align:left;border:1px solid #e8d5f2;border-radius:10px;background:#fbf7fe;color:#7e22a0;font-size:11px;line-height:1.4; }
+.expense-assistant-state { margin:0;padding:0 14px 8px;color:#806a8d;font-size:11px;line-height:1.4; }
+.expense-assistant-state.error { color:#b45309; }
+.expense-assistant-retry { align-self:flex-start;margin:0 14px 8px!important;padding:5px 10px;border-radius:8px;background:#f5edfc;color:#7e22a0;font-size:11px; }
+.expense-assistant-retry[hidden] { display:none; }
+.expense-assistant-form { display:flex;align-items:flex-end;gap:8px;padding:10px 14px;border-top:1px solid #eee3f4; }
+.expense-assistant-form textarea { flex:1;min-width:0;resize:none;min-height:42px;max-height:110px;margin:0;padding:10px;border:1px solid #e6d7ef;border-radius:11px;font:inherit;line-height:1.4; }
+.expense-assistant-form button { flex:0 0 auto;min-height:40px;padding:9px 12px;border-radius:10px;background:#9333b6;color:#fff;font-size:12px; }
+.expense-assistant button:disabled { opacity:.5;cursor:default; }
+.expense-assistant-privacy { margin:0;padding:0 14px 11px;color:#8a7696;font-size:10px;line-height:1.4; }
+.expense-assistant-credit { margin:0;padding:0 14px 9px;font-size:9px;color:#8a7696; }
+.expense-assistant-credit a { color:inherit;text-decoration:underline; }
+.expense-assistant-header h2 { color:#542368; }
+.expense-assistant-quick button:hover:not(:disabled) { background:#f0dff8;border-color:#d1a5e4; }
+.expense-assistant-form button:hover:not(:disabled),.expense-assistant-period-choice button:hover:not(:disabled) { background:#7e229c; }
+.expense-assistant-form textarea:focus,.expense-assistant-dates input:focus { border-color:#bb7bd2;box-shadow:0 0 0 3px #ead4f3;outline-color:#d8b4fe; }
+@media(max-width:480px) { .expense-assistant-launch { right:14px;bottom:max(14px,env(safe-area-inset-bottom));width:46px;height:46px; }.expense-assistant { right:12px;bottom:74px;max-height:calc(100dvh - 94px); } }

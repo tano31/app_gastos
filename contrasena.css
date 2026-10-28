@@ -1,0 +1,9 @@
+.change-password-field { position:relative; }
+#changePasswordForm .change-password-field input { width:100%;padding-right:48px; }
+#changePasswordForm .change-password-eye { position:absolute;right:8px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:34px;height:34px;min-height:0;margin:0;padding:0;border:0;border-radius:8px;background:transparent;color:#64748b;cursor:pointer; }
+#changePasswordForm .change-password-eye:hover { color:#2563eb;background:#eff6ff; }
+#changePasswordForm .change-password-eye:focus-visible { outline:2px solid #2563eb;outline-offset:2px; }
+.change-password-rules { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px;list-style:none;padding:0;margin:0;color:#64748b;font-size:13px; }
+.change-password-rules .valid { color:#15803d; }
+.change-password-rules .invalid { color:#dc2626; }
+@media(max-width:500px) { .change-password-rules { grid-template-columns:1fr; } }

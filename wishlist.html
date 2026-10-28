@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist - Control de Gastos</title>
+  <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="perfil.css?v=20261018-header-icons">
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="wishlist.css?v=20261025">
+  <link rel="stylesheet" href="notificaciones.css">
+  <link rel="stylesheet" href="recorrido.css?v=20261025-wishlist">
+  <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
+  <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
+  <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+</head>
+<body>
+  <aside class="sidebar">
+
+    <div class="sidebar-top">
+
+      <div class="sidebar-user">
+        <img id="sidebarAvatar" src="img/user-default.svg" class="sidebar-avatar" alt="Foto de usuario" data-i18n-alt="profile.photo">
+        <strong id="sidebarUserId" class="sidebar-user-id"></strong>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </a>
+        <a href="index.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span data-i18n="nav.control">Control gastos</span>
+        </a>
+
+        <a href="inversiones.html"><i class="fa-solid fa-chart-line"></i><span data-i18n="invest.name">Inversiones</span></a>
+
+        <a href="gastos-fijos.html">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span data-i18n="fixedPage.name">Gastos fijos</span>
+        </a>
+        
+
+
+        <a href="nubank.html">
+          <img src="img/logo_nubank.png" alt="Nubank" class="sidebar-icon">
+        </a>
+
+        <a href="c6.html">
+          <img src="img/logo_c6.png" alt="C6 Bank" class="sidebar-icon">
+        </a>
+        <a href="mercado.html">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span data-i18n="market.name">Mercado</span>
+        </a>
+
+        <a href="digitalizador.html"><i class="fa-solid fa-receipt"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+        <a href="wishlist.html" class="active"><i class="fa-solid fa-lightbulb"></i><span>Wishlist</span></a>
+        <a href="configuracion.html">
+          <i class="fa-solid fa-gear"></i>
+          <span data-i18n="nav.settings">Configuración</span>
+        </a>
+
+      </nav>
+
+    </div>
+
+    <div class="sidebar-footer">
+    <button id="logoutBtn" class="logout-btn" type="button">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span data-i18n="nav.logout">Salir</span>
+    </button>
+      <p class="app-version" data-i18n="nav.version">Versión 1.1</p>
+    </div>
+
+  </aside>
+  <div class="main-content">
+    <header class="app-header">
+      <div>
+        <h1 class="page-section-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i><span id="wishlistTitle">Wishlist</span></h1>
+        <p id="wishlistIntro">Compartí las mejoras que te gustaría sumar a la plataforma.</p>
+      </div>
+    </header>
+    <main class="container wishlist-container">
+      <section class="panel"><h2 id="wishNewTitle">Enviar una propuesta</h2>
+        <form id="wishForm" class="wishlist-compose">
+          <label id="wishLabel" for="wishText">¿Qué te gustaría mejorar?</label>
+          <textarea id="wishText" maxlength="20000" aria-describedby="wishCount" required></textarea>
+          <div class="wishlist-compose-footer"><span id="wishCount" class="wishlist-count">0 / 250 palabras</span><button id="sendWish" type="submit" disabled>Enviar</button></div>
+        </form>
+      </section>
+      <section class="panel"><div class="table-header"><h2 id="wishListTitle">Propuestas</h2><button id="refreshWishlist" type="button" class="btn-secondary">Actualizar lista</button></div><p id="wishStatus" class="wishlist-message" role="status" aria-live="polite"></p><div id="wishList" class="wishlist-list"></div></section>
+    </main>
+  </div>
+  <script src="i18next.min.js"></script><script src="translations.js?v=20261024-products"></script><script src="i18n.js"></script>
+  <script src="datos-cache.js?v=20261024"></script><script src="moneda.js"></script><script src="sesion.js?v=20261027-fade4s-label"></script><script src="perfil.js"></script>
+  <script src="wishlist.js?v=20261025"></script><script src="notificaciones.js?v=20261025-independent-settings"></script><script src="asistente.js?v=20261025-wealth-goal"></script><script src="recorrido.js?v=20261025-wishlist"></script><script src="perfil-pendiente.js?v=20261024-dismissible"></script>
+  <script src="aviso-dolar.js?v=20261026-yellow"></script>
+</body></html>

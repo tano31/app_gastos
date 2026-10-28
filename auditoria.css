@@ -1,0 +1,11 @@
+.audit-filters { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end; }
+.audit-filters label { font-size:13px;min-width:0; }
+.audit-filters input,.audit-filters select { width:100%;min-width:0; }
+.audit-filters button { margin:0; }
+.audit-table { overflow:auto;max-height:500px; }
+.audit-table table { min-width:850px;font-size:12px; }
+.audit-table td { vertical-align:top;overflow-wrap:anywhere; }
+.audit-table pre { white-space:pre-wrap;overflow-wrap:anywhere;max-width:420px;max-height:280px;overflow:auto;font-size:11px; }
+#auditLogSettings[hidden] { display:none; }
+#auditStatus { font-size:13px;color:#64748b; }
+@media(max-width:650px) { .audit-filters { grid-template-columns:repeat(2,minmax(0,1fr)); } }

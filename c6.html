@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title data-i18n="c6.title">C6 - Control de gastos</title>
+
+  <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
+  <link rel="stylesheet" href="nubank.css?v=20261019-validation">
+  <link rel="stylesheet" href="c6.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="perfil.css?v=20261018-c6-height">
+  <link rel="stylesheet" href="notificaciones.css">
+  <link rel="stylesheet" href="recorrido.css?v=20261025-wishlist">
+  <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
+  <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
+  <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+</head>
+
+<body>
+
+  <!-- BARRA LATERAL -->
+  <aside class="sidebar">
+
+    <div>
+      <div class="sidebar-user">
+        <img id="sidebarAvatar" src="img/user-default.svg" class="sidebar-avatar" alt="Foto de usuario" data-i18n-alt="profile.photo">
+        <strong id="sidebarUserId" class="sidebar-user-id"></strong>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </a>
+        <a href="index.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span data-i18n="nav.control">Control gastos</span>
+        </a>
+
+        <a href="inversiones.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span data-i18n="invest.name">Inversiones</span>
+        </a>
+
+        <a href="gastos-fijos.html">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span data-i18n="fixedPage.name">Gastos fijos</span>
+        </a>
+        
+
+
+        <a href="nubank.html">
+          <img src="img/logo_nubank.png" alt="" class="nubank-logo">
+          <span class="sr-only">Nubank</span>
+        </a>
+
+        <a href="c6.html" class="active">
+          <img src="img/logo_c6.png" alt="C6 Bank" class="sidebar-icon">
+        </a>
+        <a href="mercado.html">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span data-i18n="market.name">Mercado</span>
+        </a>
+
+        <a href="digitalizador.html"><i class="fa-solid fa-receipt"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+        <a href="wishlist.html"><i class="fa-solid fa-lightbulb"></i><span>Wishlist</span></a>
+        <a href="configuracion.html">
+          <i class="fa-solid fa-gear"></i>
+          <span data-i18n="nav.settings">Configuración</span>
+        </a>
+
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+    <button id="logoutButton" class="sidebar-logout" type="button">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span data-i18n="nav.logout">Salir</span>
+    </button>
+      <p class="app-version" data-i18n="nav.version">Versión 1.1</p>
+    </div>
+
+  </aside>
+
+  <!-- CONTENIDO -->
+  <main class="app-content">
+
+    <header class="page-header">
+      <h1 class="page-section-title c6-import-title"><span data-i18n="bank.importPrefix">Importador de</span><img src="img/logo_c6.png" class="page-section-logo" alt="C6 Bank"></h1>
+      <p data-i18n="c6.subtitle">Cargá los movimientos de tu cuenta desde un archivo CSV.</p>
+    </header>
+
+    <section class="import-area">
+
+      <div class="import-card">
+
+        <div class="import-icon">
+          <img src="img/logo_c6.png" alt="Logo C6 Bank" class="import-nubank-logo c6-import-logo">
+        </div>
+
+        <h2 data-i18n="nubank.import">Importar movimientos</h2>
+
+        <p class="import-description" data-i18n="c6.description">Seleccioná el archivo CSV que descargaste desde tu aplicación C6.</p>
+
+        <div class="import-user-field">
+          <label for="importUser" data-i18n="import.user">Cargar movimientos a nombre de</label>
+          <select id="importUser" aria-describedby="importUserStatus"></select>
+          <p id="importUserStatus" role="status"></p>
+        </div>
+        <div id="dropZone" class="drop-zone">
+
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+
+          <p data-i18n="nubank.drop">Arrastrá tu archivo CSV aquí</p>
+
+          <span data-i18n="common.or">o</span>
+
+          <label for="csvFile" class="select-button">
+            <i class="fa-solid fa-folder-open"></i><span data-i18n="nubank.select">Seleccionar archivo</span></label>
+
+          <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
+
+        </div>
+
+        <div id="selectedFile" class="selected-file" hidden>
+          <i class="fa-solid fa-file-csv"></i>
+          <span id="fileName"></span>
+          <button id="removeFile" type="button" aria-label="Quitar archivo" data-i18n-aria-label="nubank.remove">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <p id="fileStatus" class="file-status" role="status"></p>
+
+        <p class="file-help" data-i18n="c6.format">
+          CSV de C6: fecha en A, descripción en E e importe en BRL en I.
+        </p>
+
+        <section id="previewSection" class="preview-section" hidden aria-label="Vista previa de movimientos" data-i18n-aria-label="nubank.previewLabel">
+          <h3 data-i18n="nubank.preview">Vista previa del CSV</h3>
+          <p id="previewSummary" class="preview-summary"></p>
+          <section id="importLabels" class="label-review"></section>
+          <section id="importSummary" class="import-summary"></section>
+          <div class="preview-table-wrap">
+            <table class="preview-table">
+              <thead><tr><th data-i18n="field.date">Fecha</th><th data-i18n="field.description">Descripción</th><th><span data-i18n="field.amount">Monto</span></th><th data-i18n="field.type">Tipo</th><th data-i18n="field.category">Categoría</th></tr></thead>
+              <tbody id="previewBody"></tbody>
+            </table>
+          </div>
+          <p class="preview-note" data-i18n="c6.note">Se mostrarán hasta 100 filas. Los pagos de la tarjeta se omiten. Estorno se registra como Ingreso positivo y categoría Devolucion. Los demás se registran como gasto variable; la categoría se busca por descripción en el diccionario.</p>
+          <button id="importButton" class="import-button" type="button" disabled data-i18n="nubank.submit">Importar a Google Sheets</button>
+        </section>
+
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="i18next.min.js"></script>
+  <script src="translations.js"></script>
+  <script src="i18n.js"></script>
+  <script src="datos-cache.js?v=20261024"></script>
+  <script src="moneda.js"></script>
+  
+  <script src="sesion.js?v=20261027-fade4s-label"></script>
+  <script src="importacion-etiquetas.js?v=20261019-validation"></script>
+  <script src="importacion-resumen.js"></script>
+  <script src="c6.js"></script>
+  <script src="importacion-usuario.js"></script>
+  <script src="perfil.js"></script>
+
+  <script src="medios-pago.js?v=20261024"></script>
+  <script src="notificaciones.js?v=20261025-independent-settings"></script>
+  <script src="asistente.js?v=20261025-wealth-goal"></script>
+  <script src="recorrido.js?v=20261025-wishlist"></script>
+  <script src="perfil-pendiente.js?v=20261024-dismissible"></script>
+  <script src="aviso-dolar.js?v=20261026-yellow"></script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+.sidebar-footer { flex-shrink: 0; }
+.sidebar-footer .logout-btn, .sidebar-footer .sidebar-logout { width: calc(100% - 24px); margin: 12px 12px 6px; }
+.app-version { margin: 0 12px 4px; color: #94a3b8; font-size: 12px; line-height: 18px; text-align: center; }
+.sidebar-user { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 20px 36px 12px; text-align: left; }
+.sidebar-avatar { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; border: 2px solid #ffffff40; background: #e0e7ff; }
+.sidebar-user-id { max-width: 100%; color: #fff; font-size: 14px; overflow-wrap: anywhere; }
+.profile-section { display: grid; gap: 18px; }
+.profile-section[hidden], .settings-section[hidden] { display: none; }
+.profile-photo-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.profile-photo-picker { flex: 1; min-width: 0; }
+.profile-photo-picker[hidden], #profileRelogin[hidden] { display: none; }
+.profile-photo-picker input { width: 100%; max-width: 420px; }
+.profile-header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex: 1; min-width: 0; }
+.profile-header #profileStatus { flex: 1; min-width: 0; max-width: 400px; height: 34px; min-height: 34px; margin: 0; overflow-y: auto; overflow-wrap: anywhere; text-align: right; font-size: 12px; line-height: 17px; }
+.profile-header #profileStatus:empty { display: block; visibility: hidden; }
+.profile-header-actions button { flex-shrink: 0; }
+.profile-photo-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.profile-photo-actions[hidden] { display: none; }
+.profile-photo-actions .secondary { width: auto; margin: 0; }
+.profile-photo-actions button:disabled { opacity: .6; cursor: wait; }
+.profile-avatar-preview { width: 90px; height: 90px; object-fit: cover; border-radius: 50%; background: #e0e7ff; }
+.profile-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; width: 100%; }
+.profile-fields input { width: 100%; min-width: 0; background: #f8fafc; }
+.profile-fields label { min-width: 0; font-weight: 600; }
+@media (max-width: 1000px) { .profile-fields { grid-template-columns: minmax(0, 1fr); } }
+.profile-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.profile-header h3 { margin: 0; }
+.profile-header button { min-height: 34px; padding: 7px 14px; font-size: 14px; }
+.profile-header button:disabled { opacity: .6; cursor: wait; }
+.profile-help { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+.profile-help[hidden] { display: none; }
+.sidebar nav a img[src="img/logo_c6.png"] { filter: brightness(0) invert(1); }
+
+.app-header .page-section-title { display: flex; align-items: center; gap: 12px; }
+.page-section-title > i { flex-shrink: 0; font-size: .8em; }
+.page-section-title > span { min-width: 0; }
+.page-section-title > .page-section-logo { flex-shrink: 0; width: auto; height: .85em; max-width: 90px; object-fit: contain; }
+.page-header .nubank-import-title, .page-header .c6-import-title { display: flex; align-items: baseline; gap: .278em; flex-wrap: wrap; }
+.nubank-import-title > .page-section-logo, .c6-import-title > .page-section-logo { height: 1.7em; max-width: none; transform: translateY(.4em); }
+.c6-import-title > .page-section-logo { height: .85em; transform: translateY(.05em); filter: brightness(0) invert(1); }

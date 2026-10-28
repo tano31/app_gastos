@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title data-i18n="settings.title">Configuración - Control de Gastos</title>
+
+  <link rel="stylesheet" href="styles.css?v=20261024-products-compact2">
+  <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  >
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="perfil.css?v=20261018-header-icons">
+  <link rel="stylesheet" href="notificaciones.css">
+  <link rel="stylesheet" href="contrasena.css?v=20261024-eye">
+  <link rel="stylesheet" href="auditoria.css?v=20261025">
+  <link rel="stylesheet" href="recorrido.css?v=20261025-wishlist">
+  <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
+  <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
+  <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+</head>
+
+<body>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-top">
+
+      <div class="sidebar-user">
+        <img id="sidebarAvatar" src="img/user-default.svg" class="sidebar-avatar" alt="Foto de usuario" data-i18n-alt="profile.photo">
+        <strong id="sidebarUserId" class="sidebar-user-id"></strong>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </a>
+        <a href="index.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span data-i18n="nav.control">Control gastos</span>
+        </a>
+
+        <a href="inversiones.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span data-i18n="invest.name">Inversiones</span>
+        </a>
+
+        <a href="gastos-fijos.html">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span data-i18n="fixedPage.name">Gastos fijos</span>
+        </a>
+        
+
+
+        <a href="nubank.html">
+          <img src="img/logo_nubank.png" alt="Nubank" class="sidebar-icon">
+        </a>
+
+        <a href="c6.html">
+          <img src="img/logo_c6.png" alt="C6 Bank" class="sidebar-icon">
+        </a>
+        <a href="mercado.html">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span data-i18n="market.name">Mercado</span>
+        </a>
+
+        <a href="digitalizador.html"><i class="fa-solid fa-receipt"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+        <a href="wishlist.html"><i class="fa-solid fa-lightbulb"></i><span>Wishlist</span></a>
+        <a href="configuracion.html" class="active">
+          <i class="fa-solid fa-gear"></i>
+          <span data-i18n="nav.settings">Configuración</span>
+        </a>
+
+      </nav>
+
+    </div>
+
+    <div class="sidebar-footer">
+    <button id="logoutBtn" class="logout-btn" type="button">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span data-i18n="nav.logout">Salir</span>
+    </button>
+      <p class="app-version" data-i18n="nav.version">Versión 1.1</p>
+    </div>
+
+  </aside>
+
+  <div class="main-content">
+
+    <header class="app-header configuration-header">
+      <div>
+        <h1 class="page-section-title"><i class="fa-solid fa-gear" aria-hidden="true"></i><span data-i18n="nav.settings">Configuración</span></h1>
+        <p data-i18n="settings.subtitle">Administrá las opciones generales de la aplicación.</p>
+      </div>
+    </header>
+
+    <main class="container configuration-container">
+
+      <section class="panel configuration-panel">
+
+        <div class="configuration-title">
+          <i class="fa-solid fa-gear" aria-hidden="true"></i>
+
+          <div>
+            <h2 data-i18n="settings.panelTitle">Configuraciones</h2>
+            <p data-i18n="settings.panelSubtitle">Configuraciones generales de la plataforma</p>
+          </div>
+        </div>
+
+        <div class="configuration-content">
+
+          <aside class="configuration-menu">
+
+            <button
+              class="configuration-menu-item active"
+              type="button"
+              data-section="tables"
+            >
+              <i class="fa-solid fa-database"></i><span data-i18n="settings.tables">Bases</span></button>
+
+            <button
+              class="configuration-menu-item"
+              type="button"
+              data-section="general"
+            >
+              <i class="fa-solid fa-sliders"></i><span data-i18n="settings.general">General</span></button>
+
+            <button
+              class="configuration-menu-item"
+              type="button"
+              data-section="profile"
+            >
+              <i class="fa-solid fa-user"></i><span data-i18n="settings.profile">Mis datos</span></button>
+
+            <button class="configuration-menu-item" type="button" data-section="webhooks">
+              <svg class="webhooks-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="5" r="3"></circle>
+                <circle cx="5" cy="18" r="3"></circle>
+                <circle cx="19" cy="18" r="3"></circle>
+                <path d="M10.5 7.6 6.5 15.4M8 18h8M17.5 15.4l-4-7.8"></path>
+              </svg><span data-i18n="settings.webhooks">Webhooks</span>
+            </button>
+
+          </aside>
+
+          <div class="configuration-section">
+
+            <div id="settingsTablesSection" class="settings-section">
+            <div class="configuration-section-header">
+              <h3 data-i18n="settings.adminTables">Administrar Bases</h3>
+              <p data-i18n="settings.chooseTable">
+                Consulta y modificación de registros
+              </p>
+            </div>
+
+            <div class="table-admin-form">
+
+
+              <div class="table-admin-controls">
+
+                <select id="tableSelector" aria-label="Seleccione una Base" data-i18n-aria-label="settings.selectTable">
+                  <option value="" data-i18n="settings.selectTable">Seleccione una Base</option>
+                  <option value="etiquetas" data-i18n="settings.labels">Etiqueta de movimientos</option>
+                  <option value="categorias" data-i18n="catalog.name">Categoría</option>
+                  <option value="medios_pago" data-i18n="settings.methods">Medios de pago</option>
+                  <option value="productos_supermercado" data-i18n="settings.types">Productos supermercado</option>
+                  <option value="gastos_fijos" data-i18n="settings.fixed">Gastos fijos</option>
+                  <option value="mercado" data-i18n="market.name">Mercado</option>
+                  <option value="supermercados" data-i18n="supermarkets.name">Supermercados</option>
+                </select>
+
+
+              </div>
+
+              <p id="configurationStatus" class="configuration-status"></p>
+
+            </div>
+
+            <section id="categoriesAdmin" class="categories-admin hidden" aria-label="Diccionario de categorías" data-i18n-aria-label="categories.label">
+              <h3 data-i18n="categories.dictionary">Etiqueta de movimientos</h3>
+              <p data-i18n="categories.help">Asociá una descripción a una categoría. Las importaciones de Nubank y C6 buscarán esta etiqueta por la descripción completa, ignorando mayúsculas y espacios repetidos.</p>
+              <details id="movementLabelManualPanel" class="fixed-import-panel">
+                <summary data-i18n="categories.new">Nueva etiqueta de movimiento</summary>
+              <form id="categoryForm" class="category-form">
+                <label for="categoryName"><span data-i18n="field.category">Categoría</span><input id="categoryName" list="categorySuggestions" maxlength="100" placeholder="Elegí una existente o escribí una nueva" data-i18n-placeholder="categories.placeholder" required>
+                  <datalist id="categorySuggestions"></datalist>
+                </label>
+                <label for="categoryDescription"><span data-i18n="categories.description">Descripción del gasto</span><input id="categoryDescription" maxlength="500" placeholder="Ej: Carrefour Santos" data-i18n-placeholder="categories.example" required>
+                </label>
+                <button id="saveCategoryBtn" type="submit" disabled data-i18n="categories.save">Guardar asociación</button>
+                <p id="categoryStatus" class="configuration-status" role="status"></p>
+              </form>
+              </details>
+              <button id="refreshCategoriesBtn" class="secondary" type="button" data-i18n="categories.refresh">Actualizar lista</button>
+              <div class="table-wrapper">
+                <table>
+                  <thead><tr><th>ID</th><th data-i18n="categories.date">Fecha de registro</th><th data-i18n="field.user">Usuario</th><th data-i18n="field.category">Categoría</th><th data-i18n="field.description">Descripción</th></tr></thead>
+                  <tbody id="categoriesBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section id="categoryCatalogAdmin" class="categories-admin hidden">
+              <h3 data-i18n="catalog.name">Categoría</h3>
+              <p data-i18n="catalog.help">Administrá las categorías compartidas de la aplicación. Al renombrar una se actualizan sus etiquetas, movimientos y gastos fijos. Las categorías en uso no se pueden eliminar.</p>
+              <details id="catalogCategoryManualPanel" class="fixed-import-panel">
+                <summary data-i18n="catalog.new">Nueva Categoría</summary>
+              <form id="catalogCategoryForm" class="category-form">
+                <label for="catalogCategoryName"><span data-i18n="field.category">Categoría</span><input id="catalogCategoryName" maxlength="100" required></label>
+                <button id="saveCatalogCategory" type="submit" data-i18n="catalog.add">Agregar categoría</button>
+                <button id="cancelCatalogCategory" class="secondary" type="button" hidden data-i18n="common.cancel">Cancelar</button>
+              </form>
+              </details>
+              <p id="catalogCategoryStatus" class="configuration-status" role="status"></p>
+              <button id="refreshCatalogCategories" class="secondary" type="button" data-i18n="categories.refresh">Actualizar lista</button>
+              <div class="table-wrapper"><table><thead><tr><th data-i18n="field.category">Categoría</th><th data-i18n="fixed.actions">Acciones</th></tr></thead><tbody id="catalogCategoriesBody"></tbody></table></div>
+            </section>
+            <section id="marketAdmin" class="categories-admin hidden" aria-label="Mercado" data-i18n-aria-label="market.name">
+              <h3 data-i18n="market.title">Productos de supermercado</h3>
+              <p data-i18n="market.help">Configurá los productos habituales y la cantidad consumida por mes. Las marcas son opcionales.</p>
+              <details id="marketManualPanel" class="fixed-import-panel">
+                <summary id="marketFormTitle" data-i18n="market.loadNew">Cargar nuevo producto</summary>
+              <form id="marketForm" class="category-form">
+                <label for="marketProductName"><span data-i18n="market.productName">Nombre</span><input id="marketProductName" maxlength="200" required></label>
+                <label for="marketPrimaryBrand"><span data-i18n="market.primary">Marca primaria</span><input id="marketPrimaryBrand" maxlength="150"></label>
+                <label for="marketSecondaryBrand"><span data-i18n="market.secondary">Marca secundaria</span><input id="marketSecondaryBrand" maxlength="150"></label>
+                <label for="marketQuantity"><span data-i18n="market.quantity">Cantidad mensual</span><input id="marketQuantity" type="number" min="0.01" step="0.01" required></label>
+                <label for="marketPresentation"><span data-i18n="market.presentation">Presentación</span><input id="marketPresentation" maxlength="200" placeholder="Ej.: 1 L, integral / M, 48 unidades" data-i18n-placeholder="market.presentationPlaceholder"></label>
+                <div class="fixed-expense-actions">
+                  <button id="saveMarketProduct" type="submit" disabled data-i18n="market.save">Guardar producto</button>
+                  <button id="cancelMarketProduct" type="button" class="secondary" hidden data-i18n="common.cancel">Cancelar</button>
+                </div>
+              </form>
+              </details>
+              <p id="marketStatus" class="configuration-status" role="status"></p>
+              <a id="marketRelogin" href="login.html" hidden data-i18n="login.submit">Iniciar sesión</a>
+              <button id="refreshMarket" type="button" class="secondary" data-i18n="categories.refresh">Actualizar lista</button>
+              <div class="table-wrapper"><table>
+                <thead><tr><th>ID</th><th data-i18n="market.productName">Nombre</th><th data-i18n="market.primary">Marca primaria</th><th data-i18n="market.secondary">Marca secundaria</th><th data-i18n="market.quantity">Cantidad mensual</th><th data-i18n="market.presentation">Presentación</th><th data-i18n="fixed.actions">Acciones</th></tr></thead>
+                <tbody id="marketBody"></tbody>
+              </table></div>
+            </section>
+            <section id="supermarketsAdmin" class="categories-admin hidden" aria-label="Supermercados" data-i18n-aria-label="supermarkets.name">
+              <h3 data-i18n="supermarkets.name">Supermercados</h3>
+              <p data-i18n="supermarkets.help">Configurá los sitios y modalidades de los supermercados del optimizador. Registrar una URL no conecta automáticamente sus precios.</p>
+              <form id="supermarketForm" class="category-form">
+                <h4 id="supermarketFormTitle" data-i18n="supermarkets.new">Nuevo supermercado</h4>
+                <label for="supermarketName"><span data-i18n="market.productName">Nombre</span><input id="supermarketName" maxlength="150" required></label>
+                <label for="supermarketUrl"><span data-i18n="supermarkets.url">Sitio web / fuente</span><input id="supermarketUrl" type="url" placeholder="https://" maxlength="1000" required></label>
+                <label for="supermarketMode"><span data-i18n="supermarkets.mode">Modalidad</span><select id="supermarketMode"><option value="ambas" data-i18n="supermarkets.both">Presencial y online</option><option value="presencial" data-i18n="supermarkets.physical">Presencial</option><option value="online" data-i18n="supermarkets.online">Online</option></select></label>
+                <label for="supermarketActive"><span data-i18n="supermarkets.status">Estado</span><select id="supermarketActive"><option value="true" data-i18n="supermarkets.active">Activo</option><option value="false" data-i18n="supermarkets.inactive">Inactivo</option></select></label>
+                <div class="fixed-expense-actions"><button id="saveSupermarket" type="submit" disabled data-i18n="supermarkets.save">Guardar supermercado</button><button id="cancelSupermarket" type="button" class="secondary" hidden data-i18n="common.cancel">Cancelar</button></div>
+              </form>
+              <p id="supermarketStatus" class="configuration-status" role="status"></p>
+              <button id="refreshSupermarkets" type="button" class="secondary" data-i18n="categories.refresh">Actualizar lista</button>
+              <div class="table-wrapper"><table>
+                <thead><tr><th>ID</th><th data-i18n="market.productName">Nombre</th><th data-i18n="supermarkets.url">Sitio web / fuente</th><th data-i18n="supermarkets.mode">Modalidad</th><th data-i18n="supermarkets.status">Estado</th><th data-i18n="fixed.actions">Acciones</th></tr></thead>
+                <tbody id="supermarketsBody"></tbody>
+              </table></div>
+            </section>
+            <section id="scannedProductsAdmin" class="categories-admin hidden" aria-label="Productos supermercado">
+              <h3 data-i18n="settings.types">Productos supermercado</h3>
+              <p data-product-copy="help">Consultá y corregí los productos guardados desde el Digitalizador. También podés cargar productos manualmente.</p>
+              <details id="scannedProductPanel" class="fixed-import-panel">
+                <summary data-product-copy="new">Cargar nuevo producto</summary>
+                <form id="scannedProductForm" class="fixed-expense-form">
+                  <label><span data-product-copy="product">Producto</span><input id="scannedProductName" maxlength="500" required></label>
+                  <label><span data-product-copy="code">Código</span><input id="scannedProductCode" maxlength="100"></label>
+                  <label><span data-product-copy="quantity">Cantidad</span><input id="scannedProductQuantity" type="number" min="0.000001" step="any" required></label>
+                  <label><span data-product-copy="unit">Unidad</span><input id="scannedProductUnit" maxlength="20" value="UN" required></label>
+                  <label><span data-product-copy="price">Precio unitario (BRL)</span><input id="scannedProductPrice" type="number" min="0" step="any" required></label>
+                  <label><span data-product-copy="merchant">Supermercado / comercio</span><input id="scannedProductMerchant" maxlength="200" required></label>
+                  <label><span data-product-copy="date">Fecha de compra</span><input id="scannedProductDate" type="date" required></label>
+                  <div class="fixed-expense-actions"><button id="saveScannedProduct" type="submit" disabled data-product-copy="save">Guardar producto</button><button id="cancelScannedProduct" type="button" class="secondary" hidden data-i18n="common.cancel">Cancelar</button></div>
+                </form>
+              </details>
+              <p id="scannedProductStatus" class="configuration-status" role="status"></p>
+              <label><span data-product-copy="search">Buscar por producto, código o comercio</span><input id="scannedProductSearch" type="search"></label>
+              <button id="refreshScannedProducts" type="button" class="secondary" data-i18n="categories.refresh">Actualizar lista</button>
+              <div class="table-wrapper"><table><thead><tr><th>ID</th><th data-product-copy="date">Fecha de compra</th><th data-product-copy="merchant">Supermercado / comercio</th><th data-product-copy="code">Código</th><th data-product-copy="product">Producto</th><th data-product-copy="quantity">Cantidad</th><th data-product-copy="unit">Unidad</th><th data-product-copy="price">Precio unitario (BRL)</th><th data-i18n="field.user">Usuario</th><th data-i18n="fixed.actions">Acciones</th></tr></thead><tbody id="scannedProductsBody"></tbody></table></div>
+            </section>
+            <section id="paymentMethodsAdmin" class="categories-admin hidden" aria-label="Medios de pago">
+              <h3 data-i18n="settings.methods">Medios de pago</h3>
+              <p data-payment-copy="help">Administrá los medios disponibles al registrar pagos. Desactivarlos conserva los movimientos anteriores.</p>
+              <details id="paymentMethodPanel" class="fixed-import-panel">
+                <summary data-payment-copy="new">Cargar nuevo medio de pago</summary>
+                <form id="paymentMethodForm" class="fixed-expense-form">
+                  <label><span data-i18n="market.productName">Nombre</span><input id="paymentMethodName" maxlength="150" required></label>
+                  <label><span data-i18n="supermarkets.status">Estado</span><select id="paymentMethodActive"><option value="true" data-i18n="supermarkets.active">Activo</option><option value="false" data-i18n="supermarkets.inactive">Inactivo</option></select></label>
+                  <div class="fixed-expense-actions"><button id="savePaymentMethod" type="submit" disabled data-payment-copy="save">Guardar medio de pago</button><button id="cancelPaymentMethod" type="button" class="secondary" hidden data-i18n="common.cancel">Cancelar</button></div>
+                </form>
+              </details>
+              <p id="paymentMethodStatus" class="configuration-status" role="status"></p>
+              <button id="refreshPaymentMethods" type="button" class="secondary" data-i18n="categories.refresh">Actualizar lista</button>
+              <div class="table-wrapper"><table><thead><tr><th>ID</th><th data-i18n="field.date">Fecha</th><th data-i18n="field.user">Usuario</th><th data-i18n="market.productName">Nombre</th><th data-i18n="supermarkets.status">Estado</th><th data-i18n="fixed.actions">Acciones</th></tr></thead><tbody id="paymentMethodsBody"></tbody></table></div>
+            </section>
+            <section id="fixedExpensesAdmin" class="categories-admin hidden" aria-label="Administrar gastos fijos" data-i18n-aria-label="fixed.title">
+              <h3 data-i18n="fixed.title">Administrar gastos fijos</h3>
+              <p data-i18n="fixed.help">Configurá las descripciones, categorías y montos de tus gastos fijos.</p>
+              <details class="fixed-import-panel">
+                <summary data-i18n="fixedImport.title">Importar gastos fijos desde Excel</summary>
+                <p data-i18n="fixedImport.help">Usá las columnas id, fecha, usuario_id, descripcion, categoria y monto. Se generan IDs nuevos y se usa tu usuario. Se conserva la fecha informada; si está vacía, se registra la fecha de importación. Las descripciones repetidas se omiten sin modificar los gastos existentes.</p>
+                <div class="fixed-expense-actions"><button id="downloadFixedExpenseTemplate" type="button" class="secondary" data-i18n="fixedImport.template">Descargar plantilla Excel</button></div>
+                <label for="fixedExpenseImportFile"><span data-i18n="fixedImport.file">Seleccionar Excel (.xlsx / .xls)</span><input id="fixedExpenseImportFile" type="file" accept=".xlsx,.xls"></label>
+                <label id="fixedExpenseImportSheetLabel" for="fixedExpenseImportSheet" hidden><span data-i18n="fixedImport.sheet">Hoja del Excel</span><select id="fixedExpenseImportSheet"></select></label>
+                <p id="fixedExpenseImportStatus" class="configuration-status" role="status"></p>
+                <div id="fixedExpenseImportPreview" hidden>
+                  <div class="table-wrapper"><table><thead><tr><th data-i18n="field.description">Descripción</th><th data-i18n="field.category">Categoría</th><th data-i18n="field.amount">Monto</th><th data-i18n="categories.date">Fecha de registro</th></tr></thead><tbody id="fixedExpenseImportBody"></tbody></table></div>
+                  <p data-i18n="fixedImport.previewHelp">Vista previa de hasta 100 filas. Se valida todo el archivo antes de guardar.</p>
+                  <div class="fixed-expense-actions"><button id="confirmFixedExpenseImport" type="button" data-i18n="fixedImport.confirm" disabled>Importar gastos</button><button id="cancelFixedExpenseImport" type="button" class="secondary" data-i18n="common.cancel">Cancelar</button></div>
+                </div>
+              </details>
+              <details id="fixedExpenseManualPanel" class="fixed-import-panel">
+                <summary id="fixedExpenseFormTitle" data-i18n="fixed.new">Nuevo gasto fijo</summary>
+              <form id="fixedExpenseForm" class="category-form">
+                <label for="fixedExpenseDescription"><span data-i18n="field.description">Descripción</span>
+                  <input id="fixedExpenseDescription" maxlength="500" required>
+                </label>
+                <label for="fixedExpenseCategory"><span data-i18n="field.category">Categoría</span>
+                  <input id="fixedExpenseCategory" list="fixedExpenseCategories" maxlength="100" required placeholder="Elegí una existente o escribí una nueva" data-i18n-placeholder="categories.placeholder">
+                  <datalist id="fixedExpenseCategories"></datalist>
+                </label>
+                <label for="fixedExpenseAmount"><span data-i18n="field.amount">Monto</span>
+                  <input id="fixedExpenseAmount" type="number" min="0.01" step="0.01" required placeholder="0.00">
+                </label>
+                <label><span data-i18n="analytics.currency">Moneda</span><select id="fixedExpenseCurrency"><option value="BRL">BRL</option><option value="ARS">ARS</option><option value="USD">USD</option></select></label>
+                  <label for="fixedExpenseDueDate"><span data-i18n="notifications.dueDate">Fecha de vencimiento</span>
+                    <input id="fixedExpenseDueDate" type="date">
+                  </label>
+                  <label class="notification-checkbox" for="fixedExpenseMonthly"><input id="fixedExpenseMonthly" type="checkbox" checked><span data-i18n="notifications.monthly">Repetir cada mes</span></label>
+                  <p class="profile-help" data-i18n="notifications.dueHelp">Opcional. Si se repite, los días 29, 30 y 31 se ajustan al último día del mes.</p>
+                <div class="fixed-expense-actions">
+                  <button id="saveFixedExpense" type="submit" disabled data-i18n="fixed.save">Guardar gasto fijo</button>
+                  <button id="cancelFixedExpense" type="button" class="secondary" hidden data-i18n="common.cancel">Cancelar</button>
+                </div>
+              </form>
+              </details>
+              <p id="fixedExpenseStatus" class="configuration-status" role="status"></p>
+              <a id="fixedExpenseRelogin" href="login.html" data-i18n="login.submit" hidden>Iniciar sesión</a>
+              <button id="refreshFixedExpenses" type="button" class="secondary" data-i18n="categories.refresh">Actualizar lista</button>
+              <div class="table-wrapper">
+                <table>
+                  <thead><tr><th>ID</th><th data-i18n="categories.date">Fecha de registro</th><th data-i18n="field.user">Usuario</th><th data-i18n="field.description">Descripción</th><th data-i18n="field.category">Categoría</th><th><span data-i18n="field.amount">Monto</span></th><th data-i18n="notifications.dueDate">Fecha de vencimiento</th><th data-i18n="fixed.actions">Acciones</th></tr></thead>
+                  <tbody id="fixedExpensesBody"></tbody>
+                </table>
+              </div>
+            </section>
+            </div>
+            <section id="settingsGeneralSection" class="settings-section" hidden>
+              <div class="general-section-heading">
+                <h3 data-i18n="settings.general">General</h3>
+                <span id="generalAdminBadge" class="admin-badge" data-i18n="settings.administrator" hidden>Administrador</span>
+              </div>
+              <details class="general-option">
+                <summary><i class="fa-regular fa-clock" aria-hidden="true"></i><span data-i18n="settings.idleLabel">Cerrar sesión por inactividad</span></summary>
+              <div class="general-option-content general-idle-setting">
+                <label for="idleMinutes"><span data-i18n="settings.idleLabel">Cerrar sesión por inactividad</span>
+                  <select id="idleMinutes">
+                    <option value="5" data-i18n="settings.idle5">5 minutos</option>
+                    <option value="10" data-i18n="settings.idle10">10 minutos</option>
+                    <option value="20" data-i18n="settings.idle20">20 minutos</option>
+                    <option value="30" data-i18n="settings.idle30">30 minutos</option>
+                    <option value="60" data-i18n="settings.idle60">60 minutos</option>
+                  </select>
+                </label>
+                <p data-i18n="settings.idleHelp">Se guarda al seleccionar y se aplica a tu usuario en este navegador.</p>
+                <p id="idleSettingStatus" class="configuration-status" role="status"></p>
+              </div>
+              </details>
+              <details id="notificationPreferencesSection" class="general-option">
+                <summary><i class="fa-regular fa-bell" aria-hidden="true"></i><span data-i18n="notifications.title">Notificaciones</span></summary>
+              <form id="notificationSettingsForm" class="notification-settings">
+                <label class="notification-switch-row" for="notificationsEnabled">
+                  <span data-i18n="notifications.enabled">Activar avisos de vencimientos</span>
+                  <span class="notification-switch"><input id="notificationsEnabled" type="checkbox" role="switch" disabled><span class="notification-switch-track" aria-hidden="true"></span></span>
+                </label>
+                <label for="notificationDays"><span data-i18n="notifications.days">Días de aviso previo</span><input id="notificationDays" type="number" min="0" max="30" step="1" value="3" required disabled></label>
+                <p class="profile-help" data-i18n="notifications.help">De 0 a 30 días; 0 avisa el día del vencimiento. Se guarda en tu cuenta. Al marcar un aviso como pagado se registra el movimiento y se oculta ese vencimiento.</p>
+                <button id="saveNotificationSettings" type="submit" disabled data-i18n="notifications.save">Guardar preferencias</button>
+                <button id="notificationSettingsRetry" type="button" class="btn-secondary">Reintentar</button>
+                <p id="notificationSettingsStatus" role="status"></p>
+              </form>
+              </details>
+              <details id="guidedTourPreferencesSection" class="general-option">
+                <summary><i class="fa-regular fa-compass" aria-hidden="true"></i><span id="guidedTourSettingTitle">Recorrido guiado</span></summary>
+                <div class="notification-settings">
+                  <label class="notification-switch-row" for="guidedTourEnabled">
+                    <span id="guidedTourSettingLabel">Mostrar Recorrido guiado en el menú izquierdo</span>
+                    <span class="notification-switch"><input id="guidedTourEnabled" type="checkbox" role="switch" checked><span class="notification-switch-track" aria-hidden="true"></span></span>
+                  </label>
+                  <p id="guidedTourSettingHelp" class="profile-help">Se guarda para tu usuario en este navegador. Podés volver a activarlo desde aquí.</p>
+                  <p id="guidedTourStatus" role="status"></p>
+                </div>
+              </details>
+              <details id="passwordSettingsSection" class="general-option">
+                <summary><i class="fa-solid fa-key" aria-hidden="true"></i><span id="passwordSettingsTitle">Contraseña</span></summary>
+                <form id="changePasswordForm" class="notification-settings">
+                  <label for="currentPassword"><span id="currentPasswordLabel">Contraseña actual</span><input id="currentPassword" type="password" autocomplete="current-password" maxlength="1000" required></label>
+                  <label for="newPassword"><span id="newPasswordLabel">Nueva contraseña</span><input id="newPassword" type="password" autocomplete="new-password" minlength="8" maxlength="1000" required></label>
+                  <label for="repeatNewPassword"><span id="repeatNewPasswordLabel">Repetir nueva contraseña</span><input id="repeatNewPassword" type="password" autocomplete="new-password" minlength="8" maxlength="1000" required></label>
+                  <p id="passwordSettingsHelp" class="profile-help">Usá al menos 8 caracteres con mayúscula, minúscula, número y carácter especial. Te enviaremos un correo de validación y volverás al inicio de sesión.</p>
+                  <button id="changePasswordButton" type="submit">Actualizar contraseña</button>
+                  <p id="changePasswordStatus" class="configuration-status" role="status" aria-live="polite"></p>
+                </form>
+              </details>
+              <details id="auditLogSettings" class="general-option" hidden>
+                <summary><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span>Registro de actividad</span></summary>
+                <div class="general-option-content">
+                  <p class="profile-help">Accesos, altas y modificaciones de la plataforma. Solo administradores. Fechas de filtro en UTC.</p>
+                  <form id="auditFilterForm" class="audit-filters">
+                    <label>Desde<input id="auditFrom" type="date"></label><label>Hasta<input id="auditUntil" type="date"></label>
+                    <label>Usuario<input id="auditActor" type="text" maxlength="150"></label>
+                    <label>Acción<input id="auditAction" type="text" maxlength="80" placeholder="Ej.: delete, login, save_holding"></label>
+                    <label>Resultado<select id="auditOutcome"><option value="">Todos</option><option value="exito">Éxito</option><option value="fallo">Fallo</option><option value="sin_cambio">Sin cambio</option></select></label>
+                    <button id="auditRefresh" type="submit">Consultar</button>
+                  </form>
+                  <p id="auditStatus" role="status" aria-live="polite"></p>
+                  <div class="audit-table"><table><thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad / registro</th><th>Resultado</th><th>Detalle</th></tr></thead><tbody id="auditBody"></tbody></table></div>
+                  <button id="auditOlder" type="button" class="btn-secondary" hidden>Ver anteriores</button>
+                </div>
+              </details>
+              <details id="googleSheetConnectionSection" class="general-option">
+                <summary>
+                  <svg width="20" height="24" viewBox="0 0 24 30" aria-hidden="true" focusable="false" style="flex-shrink:0">
+                    <path fill="#0f9d58" d="M3 0h12l9 9v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3Z"/>
+                    <path fill="#87ceac" d="M15 0v9h9Z"/>
+                    <path fill="none" stroke="#fff" stroke-width="1.5" d="M5 14h14v10H5Zm0 5h14M10 14v10"/>
+                  </svg>
+                  <span data-i18n="settings.googleSheetConnection">Conexión Google Sheet</span>
+                </summary>
+                <div class="general-option-content">
+                  <p class="profile-help" data-i18n="settings.connectionUnderConstruction">En construcción</p>
+                </div>
+              </details>
+            </section>
+            <section id="settingsWebhooksSection" class="settings-section" hidden>
+              <h3 data-i18n="settings.webhooks">Webhooks</h3>
+              <p data-i18n="settings.underConstruction">Sitio en construcción</p>
+              <i class="fa-solid fa-screwdriver-wrench construction-tools" aria-hidden="true"></i>
+            </section>
+            <section id="settingsProfileSection" class="profile-section" hidden>
+              <div class="profile-header">
+                <h3 data-i18n="settings.profile">Mis datos</h3>
+                <div class="profile-header-actions">
+                  <p id="profileStatus" class="configuration-status" role="status"></p>
+                  <button id="editProfilePhoto" type="button" data-i18n="profile.edit" aria-controls="profilePhotoPicker" aria-expanded="false">Editar</button>
+                </div>
+              </div>
+              <div class="profile-photo-controls">
+                <img id="profileAvatarPreview" src="img/user-default.svg" class="profile-avatar-preview" alt="Foto de usuario" data-i18n-alt="profile.photo">
+                <div id="profilePhotoPicker" class="profile-photo-picker" hidden>
+                  <label for="profilePhoto"><span data-i18n="profile.choosePhoto">Elegir foto</span>
+                    <input id="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp">
+                  </label>
+                </div>
+              </div>
+              <div id="profilePhotoActions" class="profile-photo-actions" hidden>
+                <button id="saveProfileChanges" type="button" data-i18n="profile.saveChanges">Guardar cambios</button>
+                <button id="cancelProfileChanges" type="button" class="secondary" data-i18n="common.cancel">Cancelar</button>
+              </div>
+              <a id="profileRelogin" href="login.html" data-i18n="login.submit" hidden>Iniciar sesión</a>
+              <p id="profilePhotoHelp" class="profile-help" data-i18n="profile.photoHelp" hidden>JPG, PNG o WebP, hasta 5 MB. La foto se ajustará antes de guardarla.</p>
+              <div class="profile-fields">
+                <label for="profileEmail">Email<input id="profileEmail" type="text" readonly></label>
+                <label for="profileDocument"><span data-i18n="field.document">Documento</span><input id="profileDocument" type="text" readonly></label>
+                <label for="profileUserId"><span data-i18n="field.user">Usuario</span><input id="profileUserId" type="text" readonly></label>
+                <label for="profilePostalCode"><span data-i18n="profile.postalCode">Código postal (CEP)</span><input id="profilePostalCode" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" readonly></label>
+                <label for="profileAddress"><span data-i18n="profile.address">Dirección</span><input id="profileAddress" type="text" autocomplete="address-line1" maxlength="500" readonly></label>
+                <label for="profileNeighborhood"><span data-i18n="profile.neighborhood">Barrio</span><input id="profileNeighborhood" type="text" maxlength="200" readonly></label>
+                <label for="profileNumber"><span data-i18n="profile.number">Número</span><input id="profileNumber" type="text" maxlength="30" readonly></label>
+                <label for="profileLastLogin"><span data-i18n="profile.lastLogin">Último ingreso</span><input id="profileLastLogin" type="text" readonly></label>
+              </div>
+              <p id="profileDataHelp" class="profile-help" data-i18n="profile.dataHelp" hidden>Datos registrados en la hoja Usuarios.</p>
+            </section>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="i18next.min.js"></script>
+  <script src="translations.js?v=20261024-products"></script>
+  <script src="i18n.js"></script>
+  <script src="datos-cache.js?v=20261024"></script>
+  <script src="moneda.js"></script>
+  
+  <script src="sesion.js?v=20261027-fade4s-label"></script>
+  <script src="perfil.js?v=20261024-profile-reminder"></script>
+  <script src="gastos-fijos.js?v=20261024-currencies"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="excel-gastos-fijos.js?v=20261024-currencies"></script>
+  <script src="mercado.js"></script>
+  <script src="supermercados.js"></script>
+  <script src="catalogo-categorias.js"></script>
+  <script src="medios-pago.js?v=20261024"></script>
+  <script src="productos-supermercado.js?v=20261024"></script>
+  <script src="configuracion.js?v=20261027-signout"></script>
+  <script src="credenciales.js"></script>
+  <script src="contrasena.js?v=20261024-eye"></script>
+  <script src="auditoria.js?v=20261025"></script>
+
+  <script src="notificaciones.js?v=20261025-independent-settings"></script>
+  <script src="asistente.js?v=20261025-wealth-goal"></script>
+  <script src="recorrido.js?v=20261025-wishlist"></script>
+  <script src="perfil-pendiente.js?v=20261024-dismissible"></script>
+  <script src="aviso-dolar.js?v=20261026-yellow"></script>
+</body>
+
+</html>

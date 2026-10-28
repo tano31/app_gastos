@@ -1,0 +1,10 @@
+.login-page { isolation:isolate; }
+.login-page::before { content:none;background-image:none;animation:none; }
+.login-background-video { position:fixed;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center;pointer-events:none; }
+.login-page::after { z-index:1;background:rgba(0,15,40,.25);pointer-events:none; }
+.login-page .login-container { position:relative;z-index:2; }
+.login-page .login-card { background:rgba(245,247,250,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:loginCardReveal 4s linear both; }
+@keyframes loginCardReveal {
+  from { opacity:0; }
+  to { opacity:1; }
+}
