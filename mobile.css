@@ -1,0 +1,97 @@
+/* Shared responsive layout, loaded after each page's styles. */
+.mobile-menu-toggle,.mobile-menu-backdrop { display:none; }
+@media (max-width: 850px) {
+  html { -webkit-text-size-adjust:100%; }
+  body { min-width:0; }
+  body.mobile-menu-open { overflow:hidden; }
+  body .main-content,body .app-content,.dashboard-page.sidebar-collapsed .main-content { margin-left:0;width:100%;min-width:0; }
+  body .sidebar,.dashboard-page.sidebar-collapsed .sidebar { position:fixed;inset:0 auto 0 0;width:min(280px,calc(100vw - 56px));height:100vh;height:100dvh;z-index:1501;transform:translateX(-100%);visibility:hidden;overflow-y:auto;overscroll-behavior:contain;padding-bottom:env(safe-area-inset-bottom);transition:transform .22s ease,visibility .22s; }
+  body.mobile-menu-open .sidebar { transform:translateX(0);visibility:visible; }
+  .sidebar-top { min-height:0; }
+  .sidebar .sidebar-user { margin:20px 24px 12px; }
+  .sidebar nav a { min-height:44px; }
+  .sidebar .sidebar-footer { margin-top:auto; }
+  .dashboard-sidebar-toggle { display:none; }
+  .mobile-menu-toggle { position:absolute;top:max(10px,env(safe-area-inset-top));left:12px;z-index:1400;display:grid;place-items:center;width:42px;height:38px;min-height:38px;padding:8px;margin:0;border:1px solid #dbe3ef;border-radius:10px;background:#fff;color:#1e40af;cursor:pointer; }
+  .mobile-menu-toggle svg { width:22px;height:22px; }
+  .mobile-menu-backdrop:not([hidden]) { display:block;position:fixed;inset:0;z-index:1500;background:#0f172a80; }
+  .mobile-menu-toggle:focus-visible,.mobile-menu-backdrop:focus-visible { outline:3px solid #93c5fd;outline-offset:2px; }
+  body .app-header,body .page-header,.dashboard-page.sidebar-collapsed .app-header { padding:64px 16px 30px;min-width:0; }
+  .app-header h1,.page-header h1 { font-size:24px;overflow-wrap:anywhere; }
+  .platform-tools { top:max(12px,env(safe-area-inset-top));right:12px;gap:6px; }
+  .container,.dashboard-container { width:calc(100% - 24px);max-width:100%; }
+  .panel,.card,.form,.grid,.container > *,section,fieldset { min-width:0; }
+  .panel { padding:16px; }
+  .cards { grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }
+  .card { padding:14px; }
+  .card strong { font-size:21px;overflow-wrap:anywhere; }
+  .grid,.form,.movement-form { grid-template-columns:minmax(0,1fr); }
+  .grid { padding:16px; }
+  label,input,select,textarea { min-width:0;max-width:100%; }
+  input:not([type=checkbox]):not([type=radio]),select,textarea { font-size:16px; }
+  button { touch-action:manipulation; }
+  .table-wrapper,.preview-wrapper,.dashboard-chart-data { max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch; }
+  .table-wrapper > table { min-width:600px; }
+  .table-wrapper th,.table-wrapper td { padding:10px 8px;font-size:13px; }
+  .table-wrapper button { min-height:40px; }
+  .movement-list .movement-list-table { min-width:900px; }
+  .movement-submit-row,.panel-header,.table-header,.market-list-heading,.profile-header,.holdings-header { flex-wrap:wrap;gap:12px; }
+  .movement-submit-row { align-items:stretch;flex-direction:column; }
+  .movement-submit-row > button[type=submit] { width:100%;min-width:0;margin:0; }
+  .movement-months,.movement-month-options { width:100%; }
+  .fixed-record-options { display:grid;grid-template-columns:minmax(0,1fr);gap:12px; }
+  .fixed-record-options label { min-width:0; }
+  .fixed-record-options input,.fixed-record-options select { width:100%; }
+  .configuration-panel { padding:0; }
+  .configuration-title { padding:18px;gap:12px; }
+  .configuration-title h2 { font-size:23px; }
+  .configuration-content { grid-template-columns:minmax(0,1fr); }
+  .configuration-menu { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:12px; }
+  .configuration-menu-item { min-width:0;margin:0;padding:10px;font-size:14px;gap:8px; }
+  .configuration-section { padding:16px; }
+  .profile-header-actions { flex-basis:100%; }
+  .profile-fields { grid-template-columns:minmax(0,1fr); }
+  .dashboard-filters { display:flex;flex-wrap:wrap;justify-content:flex-start;gap:12px;padding:16px 12px 12px; }
+  .dashboard-filters #dashboardPeriod { flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px; }
+  .dashboard-period-options { flex-wrap:wrap; }
+  .dashboard-filters .dashboard-period legend { float:none;line-height:24px; }
+  .dashboard-filters .dashboard-period legend::after { content:none; }
+  .dashboard-filters .dashboard-user-dropdown summary { width:128px; }
+  .dashboard-charts { grid-template-columns:minmax(0,1fr);gap:14px; }
+  .dashboard-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .dashboard-kpis .card { padding:14px 12px; }
+  .dashboard-kpis .card > i { position:static;float:right;margin-left:6px;font-size:17px; }
+  .dashboard-kpis strong,.dashboard-kpis small,.dashboard-leading-card > strong { white-space:normal;overflow-wrap:anywhere; }
+  .dashboard-chart h2 { font-size:17px; }
+  .dashboard-plot { min-height:0; }
+  .dashboard-plot svg { min-width:460px; }
+  .dashboard-legend { font-size:12px;gap:10px; }
+  .holdings-cards { grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }
+  .holdings-cards article { padding:12px; }
+  .holdings-cards strong { font-size:20px; }
+  .holdings-cards small { overflow-wrap:anywhere; }
+  .holdings-header-actions { width:100%;justify-items:start; }
+  .holdings-status { text-align:left;max-width:100%; }
+  .holdings-form,.investment-summary { grid-template-columns:minmax(0,1fr); }
+  .investment-chart { grid-column:1; }
+  .holdings-summary { grid-template-columns:minmax(0,1fr); }
+  .import-area { width:100%;padding:12px; }
+  .import-card { width:100%;max-width:100%;padding:20px 16px; }
+  .import-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .digitizer-card { padding:16px; }
+  .modal-overlay { padding:12px; }
+  .modal-box { max-width:100%;max-height:calc(100dvh - 24px);overflow-y:auto; }
+  .modal-actions { flex-wrap:wrap; }
+  .notification-panel { max-height:calc(100dvh - 80px); }
+  .expense-assistant { max-height:calc(100dvh - 94px); }
+  body.login-page .login-container { padding:64px 16px 24px;min-height:100vh;min-height:100dvh; }
+  .login-card { padding:24px 20px; }
+  .login-register,.login-status { overflow-wrap:anywhere; }
+}
+@media (max-width: 380px) {
+  .cards,.dashboard-kpis,.holdings-cards { grid-template-columns:minmax(0,1fr); }
+  .platform-tools { gap:4px; }
+  .platform-tools .platform-currency { width:66px; }
+  .configuration-menu { grid-template-columns:minmax(0,1fr); }
+}
+@media (prefers-reduced-motion:reduce) { body .sidebar { transition:none; } }

@@ -11,8 +11,9 @@
   try {sidebarCollapsed=window.localStorage.getItem('controlGastos.dashboardSidebarCollapsed')==='true';} catch(error) {}
   function updateSidebar() {
     document.body.classList.toggle('sidebar-collapsed',sidebarCollapsed);
-    sidebar.inert=sidebarCollapsed;
-    sidebar.setAttribute('aria-hidden',String(sidebarCollapsed));
+    const hidden=window.matchMedia?.('(max-width:850px)').matches?!document.body.classList.contains('mobile-menu-open'):sidebarCollapsed;
+    sidebar.inert=hidden;
+    sidebar.setAttribute('aria-hidden',String(hidden));
     sidebarToggle.setAttribute('aria-expanded',String(!sidebarCollapsed));
     const text=I18n.t(sidebarCollapsed?'analytics.showSidebar':'analytics.hideSidebar');
     sidebarToggle.setAttribute('aria-label',text); sidebarToggle.title=text;
