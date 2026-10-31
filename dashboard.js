@@ -157,9 +157,11 @@
   const monthName = month => new Date(Number(month.slice(0,4)),Number(month.slice(5))-1,1).toLocaleDateString(I18n.locale,{month:'short',year:'2-digit'});
   const shortMoney = value => new Intl.NumberFormat(I18n.locale,{notation:'compact',maximumFractionDigits:1}).format(value);
   function fitLeadingText() {
-    [['dashboardLeadingLabel',14],['dashboardLeading',24],['dashboardIncome',24],['dashboardTotal',24],['dashboardAssets',24],['dashboardAverage',24],['dashboardLeadingAmount',12]].forEach(([id,size])=>{
+    const mobile=window.matchMedia?.('(max-width:850px)').matches;
+    [['dashboardLeadingLabel',14],['dashboardLeading',24],['dashboardIncome',24],['dashboardTotal',24],['dashboardAssets',24],['dashboardAverage',24],['dashboardLeadingAmount',12]].forEach(([id,baseSize])=>{
       const element=get(id);
       if (!element || !element.clientWidth) return;
+      const size=mobile&&baseSize===24?20:baseSize;
       element.style.fontSize=size+'px';
       if(element.scrollWidth>element.clientWidth) {
         element.style.fontSize=Math.max(1,size*element.clientWidth/element.scrollWidth-0.2).toFixed(2)+'px';
@@ -499,5 +501,8 @@
     }).observe(get('dashboardLeading').parentElement);
   }
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitLeadingText);
+  if(window.MutationObserver){
+    new window.MutationObserver(()=>window.requestAnimationFrame(fitLeadingText)).observe(document.querySelector('.dashboard-kpis'),{childList:true,characterData:true,subtree:true});
+  }
   renderDates();renderUsers(); renderCategoryFilter(); load();
 })();
