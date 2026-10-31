@@ -6,7 +6,7 @@
   <title data-i18n="analytics.pageTitle">Dashboard - Control de Gastos</title>
   <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css?v=6.7.2">
   <link rel="stylesheet" href="i18n.css">
   <link rel="stylesheet" href="perfil.css?v=20261018-header-icons">
   <link rel="stylesheet" href="dashboard.css?v=20261028-hover-simple">
@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
   <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
   <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+  <link rel="stylesheet" href="mobile.css?v=20261031-direct-nav">
+  <script src="mobile.js?v=20261031-direct-nav" defer></script>
 </head>
 <body class="dashboard-page">
   <button id="dashboardSidebarToggle" class="dashboard-sidebar-toggle" type="button" aria-controls="dashboardSidebar" aria-expanded="true" aria-label="Ocultar accesos">
@@ -139,6 +141,10 @@
       </section>
     </main>
   </div>
+    <nav class="mobile-bottom-nav" aria-label="Navegación principal">
+    <a href="dashboard.html" class="active" aria-current="page"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="digitalizador.html"><i class="fa-solid fa-receipt" aria-hidden="true"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+  </nav>
   <script src="i18next.min.js"></script>
   <script src="translations.js?v=20261014-no-method"></script>
   <script src="i18n.js"></script>
@@ -148,14 +154,15 @@
   <script src="sesion.js?v=20261027-fade4s-label"></script>
   <script src="perfil.js"></script>
   <script src="dashboard-datos.js?v=20261014-no-method"></script>
-  <script src="dashboard.js?v=20261028-hover-simple"></script>
+  <script src="dashboard.js?v=20261031-mobile"></script>
   <script src="dashboard-patrimonio.js?v=20261024"></script>
   <script src="medios-pago.js?v=20261024"></script>
   <script src="notificaciones.js?v=20261025-independent-settings"></script>
   <script src="asistente.js?v=20261025-wealth-goal"></script>
-  <script src="recorrido.js?v=20261025-wishlist"></script>
+  <script src="recorrido.js?v=20261031-desktop-tour"></script>
   <script src="perfil-pendiente.js?v=20261024-dismissible"></script>
   <script src="aviso-dolar.js?v=20261026-yellow"></script>
+
 </body>
 </html>
 

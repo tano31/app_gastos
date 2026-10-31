@@ -16,15 +16,16 @@
     window.location.replace(target.href);return true;
   }
   if(limitMobilePages())return;
-  const bottomNav=document.createElement('nav');bottomNav.className='mobile-bottom-nav';
-  allowedPages.forEach(page=>{
+  const existingNav=document.querySelector('.mobile-bottom-nav');
+  const bottomNav=existingNav||document.createElement('nav');bottomNav.className='mobile-bottom-nav';
+  if(!existingNav)allowedPages.forEach(page=>{
     const original=Array.from(sidebar.querySelectorAll('nav a')).find(link=>new URL(link.href,window.location.href).pathname.endsWith('/'+page));
     if(!original)return;
     const link=original.cloneNode(true);link.classList.toggle('active',window.location.pathname.endsWith('/'+page));
     if(link.classList.contains('active'))link.setAttribute('aria-current','page');
     bottomNav.appendChild(link);
   });
-  document.body.appendChild(bottomNav);
+  if(!existingNav)document.body.appendChild(bottomNav);
   const toggle=document.createElement('button');toggle.type='button';toggle.className='mobile-menu-toggle';
   toggle.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
   if(!sidebar.id)sidebar.id='mobileSidebar';

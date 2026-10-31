@@ -6,15 +6,17 @@
   <title data-i18n="digitizer.title">Digitalizador - Control de Gastos</title>
   <link rel="icon" type="image/png" href="img/icono_fondo_translucido.png">
   <link rel="stylesheet" href="styles.css?v=20261018-movements-loading">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css?v=6.7.2">
   <link rel="stylesheet" href="i18n.css">
   <link rel="stylesheet" href="perfil.css?v=20261018-header-icons">
   <link rel="stylesheet" href="notificaciones.css">
   <link rel="stylesheet" href="recorrido.css?v=20261025-wishlist">
-  <link rel="stylesheet" href="digitalizador.css?v=20261024-save-items">
+  <link rel="stylesheet" href="digitalizador.css?v=20261031-camera">
   <link rel="stylesheet" href="asistente.css?v=20261024-lilac">
   <link rel="stylesheet" href="aviso-dolar.css?v=20261026-yellow">
   <link rel="stylesheet" href="sesion-salida.css?v=20261027-fade4s-label">
+  <link rel="stylesheet" href="mobile.css?v=20261031-direct-nav">
+  <script src="mobile.js?v=20261031-direct-nav" defer></script>
 </head>
 <body>
   <aside class="sidebar">
@@ -94,6 +96,7 @@
         <h2 data-copy="heading">Digitalizar nota fiscal</h2>
         <p data-copy="intro">Cargá una foto donde se vea el QR o pegá el enlace de consulta de tu nota.</p>
         <label class="digitizer-drop" for="receiptPhoto"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><strong data-scan="choose">Agregar fotos de la misma nota</strong><span data-scan="limits">Hasta 10 fotos, 10 MB por foto y 50 MB en total. Agregalas en el orden de lectura.</span><input id="receiptPhoto" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>
+        <div class="receipt-camera-actions"><button id="receiptTakePhoto" type="button"><i class="fa-solid fa-camera" aria-hidden="true"></i> <span data-scan="takePhoto">Tomar foto con la cámara</span></button><input id="receiptCamera" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden></div>
         <div id="receiptPhotos" class="receipt-photos"></div>
         <div class="receipt-actions"><button id="receiptAnalyze" type="button" data-scan="retry" hidden>Reintentar lectura</button><button id="receiptConsolidate" type="button" data-scan="consolidate" disabled>Consolidar y revisar</button><button id="receiptClear" type="button" class="secondary" data-scan="clear" hidden>Nueva nota</button></div>
         <p id="receiptBatchStatus" role="status" aria-live="polite"></p>
@@ -132,11 +135,16 @@
       </section>
     </main>
   </div>
+    <nav class="mobile-bottom-nav" aria-label="Navegación principal">
+    <a href="dashboard.html"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="digitalizador.html" class="active" aria-current="page"><i class="fa-solid fa-receipt" aria-hidden="true"></i><span data-i18n="digitizer.name">Digitalizador</span></a>
+  </nav>
   <script src="i18next.min.js"></script><script src="translations.js"></script><script src="i18n.js"></script><script src="datos-cache.js?v=20261024"></script>
   <script src="moneda.js"></script>
   <script src="sesion.js?v=20261027-fade4s-label"></script><script src="perfil.js"></script><script src="medios-pago.js?v=20261024"></script>
-  <script src="notificaciones.js?v=20261025-independent-settings"></script><script src="digitalizador.js?v=20261021-multi"></script><script src="notas-fiscales-datos.js?v=20261024-dia-quantity"></script><script src="digitalizador-fotos.js?v=20261024-dia-quantity"></script><script src="asistente.js?v=20261025-wealth-goal"></script>
-  <script src="recorrido.js?v=20261025-wishlist"></script>
+  <script src="notificaciones.js?v=20261025-independent-settings"></script><script src="digitalizador.js?v=20261021-multi"></script><script src="notas-fiscales-datos.js?v=20261024-dia-quantity"></script><script src="digitalizador-fotos.js?v=20261031-camera"></script><script src="asistente.js?v=20261025-wealth-goal"></script>
+  <script src="recorrido.js?v=20261031-desktop-tour"></script>
   <script src="perfil-pendiente.js?v=20261024-dismissible"></script>
   <script src="aviso-dolar.js?v=20261026-yellow"></script>
+
 </body></html>
