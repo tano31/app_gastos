@@ -17,12 +17,15 @@
   Object.assign(copy.pt,{saveItems:'Salvar produtos no Google Sheets',savingItems:'Salvando produtos…',itemsSaved:'Produtos salvos em items_mercado.',itemsSaveError:'Não foi possível confirmar. Tente novamente sem duplicar o lote.',saveInvalid:'Preencha loja, data, produto, quantidade, unidade e preço unitário.'});
   Object.assign(copy.en,{saveItems:'Save products to Google Sheets',savingItems:'Saving products…',itemsSaved:'Products saved to items_mercado.',itemsSaveError:'Could not confirm saving. Retrying will not duplicate this batch.',saveInvalid:'Complete merchant, date, product, quantity, unit and unit price.'});
   const newBatch=()=>window.crypto?.randomUUID?.()||'receipt-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
+  Object.assign(copy.es,{takePhoto:'Tomar foto con la cámara'});
+  Object.assign(copy.pt,{takePhoto:'Tirar foto com a câmera'});
+  Object.assign(copy.en,{takePhoto:'Take a photo with the camera'});
   let batchId=newBatch(),saved=false;
   let photos=[],busy=false,sequence=0,items=[],dirty=false,revision=0,draftRevision=-1,sourceVersion=0,textSourceVersion=-1,notice='',isError=false;
   const t=()=>copy[(document.documentElement.lang||'es').slice(0,2)]||copy.es;
   const make=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
   function message(key,error=false){notice=key;isError=error;get('receiptBatchStatus').textContent=t()[key]||key;get('receiptBatchStatus').className=error?'error':'';}
-  function controls(){get('receiptPhoto').disabled=busy||saved;get('receiptConsolidate').disabled=busy||saved||!photos.length||photos.some(photo=>photo.state!=='done');get('receiptAnalyze').hidden=!photos.some(photo=>photo.state==='error');get('receiptAnalyze').disabled=busy||saved;get('receiptClear').hidden=!photos.length;get('receiptClear').disabled=busy;get('receiptDownload').disabled=busy||draftRevision!==revision;get('receiptSaveItems').disabled=busy||saved||draftRevision!==revision;get('receiptAddItem').disabled=get('receiptReparse').disabled=get('receiptOcrText').disabled=busy||saved;get('receiptDraft').querySelectorAll?.('input').forEach(input=>{input.disabled=busy||saved;});get('receiptItems').querySelectorAll?.('button').forEach(button=>{button.disabled=busy||saved;});}
+  function controls(){['receiptCamera','receiptTakePhoto'].forEach(id=>{if(get(id))get(id).disabled=busy||saved;});get('receiptPhoto').disabled=busy||saved;get('receiptConsolidate').disabled=busy||saved||!photos.length||photos.some(photo=>photo.state!=='done');get('receiptAnalyze').hidden=!photos.some(photo=>photo.state==='error');get('receiptAnalyze').disabled=busy||saved;get('receiptClear').hidden=!photos.length;get('receiptClear').disabled=busy;get('receiptDownload').disabled=busy||draftRevision!==revision;get('receiptSaveItems').disabled=busy||saved||draftRevision!==revision;get('receiptAddItem').disabled=get('receiptReparse').disabled=get('receiptOcrText').disabled=busy||saved;get('receiptDraft').querySelectorAll?.('input').forEach(input=>{input.disabled=busy||saved;});get('receiptItems').querySelectorAll?.('button').forEach(button=>{button.disabled=busy||saved;});}
   function gallery(){get('receiptPhotos').replaceChildren();photos.forEach((photo,index)=>{
     const card=make('article');card.className='receipt-photo-card';const image=make('img');image.src=photo.url;image.alt=photo.file.name;
     const view=make('a');view.href=photo.url;view.target='_blank';view.rel='noopener noreferrer';view.appendChild(image);
@@ -57,13 +60,16 @@
     }catch(error){photos.filter(photo=>photo.state!=='done').forEach(photo=>photo.state='error');}
     finally{if(worker)await worker.terminate().catch(()=>{});busy=false;gallery();message(photos.some(photo=>photo.state==='error')?'failed':'ready',photos.some(photo=>photo.state==='error'));}
   }
-  get('receiptPhoto').addEventListener('change',event=>{
-    if(busy)return;const incoming=Array.from(event.target.files||[]);event.target.value='';
+  function addPhotos(event){
+    if(busy||saved)return;const incoming=Array.from(event.target.files||[]);event.target.value='';
     const fresh=incoming.filter(file=>!photos.some(photo=>photo.file.name===file.name&&photo.file.size===file.size&&photo.file.lastModified===file.lastModified));
     if(!fresh.length){if(incoming.length)message('duplicates');return;}
     if(photos.length+fresh.length>10||fresh.some(file=>!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024)||photos.reduce((sum,photo)=>sum+photo.file.size,0)+fresh.reduce((sum,file)=>sum+file.size,0)>50*1024*1024){message('limitError',true);return;}
     fresh.forEach(file=>photos.push({id:++sequence,file,url:URL.createObjectURL(file),text:'',qr:null,state:'pending'}));revision++;sourceVersion++;get('receiptResult').hidden=true;get('receiptQr').value='';analyze();
-  });
+  }
+  get('receiptPhoto').addEventListener('change',addPhotos);
+  get('receiptCamera')?.addEventListener('change',addPhotos);
+  if(get('receiptTakePhoto'))get('receiptTakePhoto').onclick=()=>{if(!busy&&!saved)get('receiptCamera').click();};
   function reconcile(){
     const comparison=ReceiptData.compareTotals(get('receiptTotal').value,items),locale=document.documentElement.lang||'es';
     const missingQuantity=items.some(item=>!(ReceiptData.amount(item.quantity)>0));

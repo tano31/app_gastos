@@ -48,3 +48,5 @@
 #receiptReconciliation.valid { color:#15803d; }#receiptReconciliation.invalid { color:#b91c1c; }
 #receiptSaveStatus.success { color:#15803d; }#receiptSaveStatus.error { color:#b91c1c; }
 @media(max-width:600px){.digitizer-card{padding:20px;}}
+.receipt-camera-actions { display:none; }
+@media(max-width:850px) { .receipt-camera-actions { display:block;margin:12px 0; }.receipt-camera-actions button { width:100%;min-height:44px; }.receipt-camera-actions button i { margin-right:6px; } }

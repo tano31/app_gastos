@@ -1,5 +1,6 @@
 (function(){
   'use strict';
+  if(window.matchMedia?.('(max-width:850px)').matches)return;
   let user;try{user=JSON.parse(sessionStorage.getItem('controlGastos.user')||'null');}catch(error){return;}
   const nav=document.querySelector('.sidebar nav');
   if(!user?.perfil_token||sessionStorage.getItem('controlGastos.loggedIn')!=='true'||!nav)return;
