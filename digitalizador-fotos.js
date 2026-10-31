@@ -17,15 +17,77 @@
   Object.assign(copy.pt,{saveItems:'Salvar produtos no Google Sheets',savingItems:'Salvando produtos…',itemsSaved:'Produtos salvos em items_mercado.',itemsSaveError:'Não foi possível confirmar. Tente novamente sem duplicar o lote.',saveInvalid:'Preencha loja, data, produto, quantidade, unidade e preço unitário.'});
   Object.assign(copy.en,{saveItems:'Save products to Google Sheets',savingItems:'Saving products…',itemsSaved:'Products saved to items_mercado.',itemsSaveError:'Could not confirm saving. Retrying will not duplicate this batch.',saveInvalid:'Complete merchant, date, product, quantity, unit and unit price.'});
   const newBatch=()=>window.crypto?.randomUUID?.()||'receipt-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
-  Object.assign(copy.es,{takePhoto:'Tomar foto con la cámara'});
-  Object.assign(copy.pt,{takePhoto:'Tirar foto com a câmera'});
-  Object.assign(copy.en,{takePhoto:'Take a photo with the camera'});
+  Object.assign(copy.es,{takePhoto:'Tomar foto con la cámara',cameraHelp:'Fotografiá toda la nota, incluidos los productos y el total. Apoyala plana, con buena luz y sin sombras. Para notas largas, agregá varias fotos con unas líneas en común.'});
+  Object.assign(copy.pt,{takePhoto:'Tirar foto com a câmera',cameraHelp:'Fotografe a nota inteira, incluindo produtos e total. Apoie em uma superfície plana, com boa luz e sem sombras. Para notas longas, adicione fotos com algumas linhas em comum.'});
+  Object.assign(copy.en,{takePhoto:'Take a photo with the camera',cameraHelp:'Photograph the entire receipt, including items and total. Keep it flat with good lighting and no shadows. For long receipts, add photos with a few overlapping lines.'});
   let batchId=newBatch(),saved=false;
   let photos=[],busy=false,sequence=0,items=[],dirty=false,revision=0,draftRevision=-1,sourceVersion=0,textSourceVersion=-1,notice='',isError=false;
   const t=()=>copy[(document.documentElement.lang||'es').slice(0,2)]||copy.es;
   const make=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
+  function ocrSummary(text){
+    const parsed=ReceiptData.parse(text),comparison=ReceiptData.compareTotals(parsed.total,parsed.items);
+    return {parsed,comparison,complete:comparison.matches&&!!parsed.date&&!!parsed.merchant};
+  }
+  function preferOcr(current,candidate){
+    if(!candidate.trim())return current;
+    const a=ocrSummary(current),b=ocrSummary(candidate);
+    // Elegir una lectura completa: no mezclar importes o productos de intentos distintos.
+    const score=result=>[Number(result.comparison.matches),result.parsed.items.length,Number(!!result.parsed.date)+Number(!!result.parsed.merchant)+Number(result.parsed.total!==null)];
+    const left=score(a),right=score(b);
+    for(let i=0;i<left.length;i++){if(left[i]!==right[i])return right[i]>left[i]?candidate:current;}
+    return current||candidate;
+  }
+  async function readPhoto(worker,image,camera){
+    const canvas=make('canvas');
+    function draw(left,top,width,height,scale,contrast=false){
+      canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));
+      const context=canvas.getContext('2d');
+      context.filter=contrast?'grayscale(1) contrast(1.25)':'none';
+      context.drawImage(image,left,top,width,height,0,0,canvas.width,canvas.height);
+    }
+    let best='';
+    try{
+      const width=image.naturalWidth,height=image.naturalHeight,scale=Math.min(1,2600/Math.max(width,height));
+      draw(0,0,width,height,scale);
+      best=String((await worker.recognize(canvas,{rotateAuto:true})).data.text||'').trim();
+      if(!worker.setParameters||(!camera&&ocrSummary(best).complete))return best;
+      try{
+        await worker.setParameters({tessedit_pageseg_mode:'6',preserve_interword_spaces:'1'});
+        draw(0,0,width,height,scale,true);
+        best=preferOcr(best,String((await worker.recognize(canvas,{rotateAuto:true})).data.text||'').trim());
+        // Leer tiras con solapamiento conserva letras pequeñas de tickets largos sin
+        // mantener un canvas gigante en la memoria del teléfono.
+        if(!ocrSummary(best).complete){
+          const detailScale=Math.min(1,2600/width),tileHeight=Math.min(height,Math.floor(1800/detailScale));
+          const overlap=Math.min(Math.floor(tileHeight*.2),Math.floor(300/detailScale));
+          const step=Math.max(1,tileHeight-overlap),count=Math.ceil(Math.max(0,height-tileHeight)/step)+1;
+          if(count<=10){
+            const strips=[];
+            for(let top=0;top<height;top+=step){
+              const cropHeight=Math.min(tileHeight,height-top);draw(0,top,width,cropHeight,detailScale,true);
+              strips.push({id:strips.length,text:String((await worker.recognize(canvas,{rotateAuto:true})).data.text||'').trim()});
+              if(top+cropHeight>=height)break;
+            }
+            // Una fila completa con número de ítem y código identifica el mismo
+            // producto en el borde de dos tiras de esta foto; no deduplicar sólo precios.
+            const clean=line=>line.trim().replace(/\s+/g,' ').toLowerCase();
+            for(let i=1;i<strips.length;i++){
+              const previous=strips[i-1].text.split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+              const next=strips[i].text.split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+              if(/^\d{1,3}\s+\d{3,14}\s/.test(next[0]||'')&&clean(previous.at(-1)||'')===clean(next[0])){
+                next.shift();strips[i].text=next.join('\n');
+              }
+            }
+            best=preferOcr(best,ReceiptData.consolidate(strips).text);
+          }
+        }
+      }catch(error){/* Un reintento fallido no descarta una lectura previa útil. */}
+      finally{await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'0'}).catch(()=>{});}
+      return best;
+    }finally{canvas.width=canvas.height=1;}
+  }
   function message(key,error=false){notice=key;isError=error;get('receiptBatchStatus').textContent=t()[key]||key;get('receiptBatchStatus').className=error?'error':'';}
-  function controls(){['receiptCamera','receiptTakePhoto'].forEach(id=>{if(get(id))get(id).disabled=busy||saved;});get('receiptPhoto').disabled=busy||saved;get('receiptConsolidate').disabled=busy||saved||!photos.length||photos.some(photo=>photo.state!=='done');get('receiptAnalyze').hidden=!photos.some(photo=>photo.state==='error');get('receiptAnalyze').disabled=busy||saved;get('receiptClear').hidden=!photos.length;get('receiptClear').disabled=busy;get('receiptDownload').disabled=busy||draftRevision!==revision;get('receiptSaveItems').disabled=busy||saved||draftRevision!==revision;get('receiptAddItem').disabled=get('receiptReparse').disabled=get('receiptOcrText').disabled=busy||saved;get('receiptDraft').querySelectorAll?.('input').forEach(input=>{input.disabled=busy||saved;});get('receiptItems').querySelectorAll?.('button').forEach(button=>{button.disabled=busy||saved;});}
+  function controls(){['receiptCamera','receiptTakePhoto'].forEach(id=>{if(get(id))get(id).disabled=busy||saved;});get('receiptPhoto').disabled=busy||saved;get('receiptConsolidate').disabled=busy||saved||!photos.length||photos.some(photo=>photo.state!=='done');get('receiptAnalyze').hidden=!photos.some(photo=>photo.state==='error'||photo.incomplete);get('receiptAnalyze').disabled=busy||saved;get('receiptClear').hidden=!photos.length;get('receiptClear').disabled=busy;get('receiptDownload').disabled=busy||draftRevision!==revision;get('receiptSaveItems').disabled=busy||saved||draftRevision!==revision;get('receiptAddItem').disabled=get('receiptReparse').disabled=get('receiptOcrText').disabled=busy||saved;get('receiptDraft').querySelectorAll?.('input').forEach(input=>{input.disabled=busy||saved;});get('receiptItems').querySelectorAll?.('button').forEach(button=>{button.disabled=busy||saved;});}
   function gallery(){get('receiptPhotos').replaceChildren();photos.forEach((photo,index)=>{
     const card=make('article');card.className='receipt-photo-card';const image=make('img');image.src=photo.url;image.alt=photo.file.name;
     const view=make('a');view.href=photo.url;view.target='_blank';view.rel='noopener noreferrer';view.appendChild(image);
@@ -35,25 +97,16 @@
       if(busy)return;if(!offset){URL.revokeObjectURL(photo.url);photos.splice(index,1);}else [photos[index],photos[index+offset]]=[photos[index+offset],photos[index]];
       revision++;sourceVersion++;get('receiptResult').hidden=true;get('receiptQr').value='';gallery();message('sourceChanged');controls();};actions.appendChild(button);});card.appendChild(actions);get('receiptPhotos').appendChild(card);
   });controls();}
-  async function analyze(){
+  async function analyze(force=false){
     if(busy)return;busy=true;gallery();let worker;
     try{
       await tools.library('https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js');
       worker=await Tesseract.createWorker('por',1,{workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0',logger:info=>{if(info.status==='recognizing text')get('receiptBatchStatus').textContent=t().working+' '+(photos.findIndex(photo=>photo.state==='reading')+1)+' / '+photos.length+' · '+Math.round(info.progress*100)+'%';}});
-      for(const photo of photos){if(photo.state==='done')continue;photo.state='reading';gallery();
+      for(const photo of photos){if(photo.state==='done'&&!force)continue;photo.state='reading';gallery();
         try{const image=new Image();image.src=photo.url;await image.decode();
           try{photo.qr=await tools.readQr(image);}catch(error){photo.qr=null;}
-          const canvas=make('canvas'),scale=Math.min(1,2600/Math.max(image.naturalWidth,image.naturalHeight));canvas.width=Math.round(image.naturalWidth*scale);canvas.height=Math.round(image.naturalHeight*scale);canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
-          const data=await worker.recognize(canvas);photo.text=data.data.text.trim();
-          // Reintentar con disposición de bloque cuando la lectura automática pierde los ítems.
-          if(photo.text&&!ReceiptData.parse(photo.text).items.length&&worker.setParameters){
-            try{
-              await worker.setParameters({tessedit_pageseg_mode:'6'});
-              const retry=await worker.recognize(canvas),retryText=retry.data.text.trim();
-              if(ReceiptData.parse(retryText).items.length>ReceiptData.parse(photo.text).items.length)photo.text=retryText;
-            }catch(error){/* Conservar la primera lectura si falla el reintento. */}
-            finally{await worker.setParameters({tessedit_pageseg_mode:'3'});}
-          }
+          photo.text=await readPhoto(worker,image,photo.camera);
+          photo.incomplete=!ocrSummary(photo.text).complete;
           if(!photo.text)throw Error('empty');photo.state='done';
         }catch(error){photo.state='error';}gallery();
       }
@@ -65,7 +118,7 @@
     const fresh=incoming.filter(file=>!photos.some(photo=>photo.file.name===file.name&&photo.file.size===file.size&&photo.file.lastModified===file.lastModified));
     if(!fresh.length){if(incoming.length)message('duplicates');return;}
     if(photos.length+fresh.length>10||fresh.some(file=>!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024)||photos.reduce((sum,photo)=>sum+photo.file.size,0)+fresh.reduce((sum,file)=>sum+file.size,0)>50*1024*1024){message('limitError',true);return;}
-    fresh.forEach(file=>photos.push({id:++sequence,file,url:URL.createObjectURL(file),text:'',qr:null,state:'pending'}));revision++;sourceVersion++;get('receiptResult').hidden=true;get('receiptQr').value='';analyze();
+    fresh.forEach(file=>photos.push({id:++sequence,file,url:URL.createObjectURL(file),text:'',qr:null,state:'pending',camera:event.target.id==='receiptCamera'}));revision++;sourceVersion++;get('receiptResult').hidden=true;get('receiptQr').value='';analyze();
   }
   get('receiptPhoto').addEventListener('change',addPhotos);
   get('receiptCamera')?.addEventListener('change',addPhotos);
@@ -95,7 +148,7 @@
   };
   get('receiptReparse').onclick=()=>{if(busy)return;if(textSourceVersion!==sourceVersion){message('sourceChanged',true);return;}if(canReplace())draft(get('receiptOcrText').value);};
   get('receiptOcrText').addEventListener('input',()=>{revision++;controls();});
-  get('receiptAnalyze').onclick=analyze;
+  get('receiptAnalyze').onclick=()=>{if(busy||saved)return;revision++;sourceVersion++;analyze(true);};
   get('receiptAddItem').onclick=()=>{items.push({description:'',quantity:1,unit:'UN',unitPrice:'',total:''});dirty=true;table();};
   ['receiptMerchant','receiptDate','receiptTotal'].forEach(id=>get(id).addEventListener('input',()=>{dirty=true;reconcile();}));
   get('receiptClear').onclick=()=>{if(busy||!window.confirm(t().reset))return;photos.forEach(photo=>URL.revokeObjectURL(photo.url));photos=[];items=[];dirty=false;saved=false;batchId=newBatch();get('receiptSaveStatus').textContent='';revision++;draftRevision=-1;['receiptDraft','receiptOcrResult','receiptResult'].forEach(id=>get(id).hidden=true);get('receiptOcrText').value='';get('receiptQr').value='';get('digitizerStatus').textContent='';gallery();message('');};
