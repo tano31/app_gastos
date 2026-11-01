@@ -30,13 +30,17 @@
       const rank=/valor\s*(?:a\s*)?pagar|total\s*a\s*pagar/i.test(line)?3:/valor\s*total|total\s*(?:r\$|:)/i.test(line)?2:/^total\b/i.test(line)?1:0;
       const match=line.match(/(-?[\d.]+,\d{2})\s*$/)||(/^[\d.]+,\d{2}$/.test(lines[index+1]||'')?lines[index+1].match(/([\d.]+,\d{2})/):null);if(rank&&rank>=priority&&match){total=amount(match[1]);priority=rank;}
     });
-    const merchantWithCnpj=lines.slice(0,10).map(line=>line.match(/\bCNPJ\s*:\s*[\d./\-\s]+([A-ZÀ-ÿ].*)/i)).find(Boolean);
+    const merchantWithCnpj=lines.slice(0,10).map(line=>line.match(/\bCNP[JUI]\s*:\s*[\d.,/\-\s]+([A-ZÀ-ÿ].*)/i)).find(Boolean);
     const merchant=merchantWithCnpj&&!/^I[EF]\s*[:\d]/i.test(merchantWithCnpj[1])?merchantWithCnpj[1].trim():lines.slice(0,10).find(line=>/[a-zÀ-ÿ]{3}/i.test(line)&&!/(cnpj|cpf|documento|danfe|consumidor|nota fiscal|chave|http|inscri|endere|emiss|\bcep\b)/i.test(line)&&!/^[\d\s.,:/-]+$/.test(line))||'';
     // Algunos comercios (DIA) imprimen la situación tributaria F/T03 entre precio y total.
-    const detailPattern=/^(?:(.+?)\s+)?(?:[—–]\s*)?(\d+(?:[.,]\d+)?)?\s*(UN|UM|KG|KA|G|LT|L|ML|PC|PCT|CX)[0-9]?\s*(?:[xX*×]\s*)?(?:R\$\s*)?([\d.]+,\d{2,4})\s*(?:\(\s*(?:R\$\s*)?([\d.]+,\d{2,4})\s*\)\s*)?(?:(?:F|[TI1]\s*[O0-9]{1,3})[.:]?\s+)?(?:R\$\s*)?([\d.]+,\d{2})\s*$/i;
+    const detailPattern=/^(?:(.+?)\s+)?(?:[—–]\s*)?(\d+(?:[.,]\d+)?)?\s*(UNG|KAG|UN|UM|KG|KA|KS|G|LT|L|ML|PC|PCT|CX)[0-9]{0,2}\s*(?:[xX*×]\s*)?(?:R\$\s*)?([\d.]+,\d{2,4})\s*(?:\(\s*(?:R\$\s*)?([\d.]+,\d{2,4})\s*\)\s*)?(?:(?:F|[TI1]\s*[O0-9]{1,3})[.:]?\s+)?(?:R\$\s*)?([\d.]+,\d{2})\s*[|:;]*\s*$/i;
+    const itemHeader=line=>{
+      const header=line.replace(/^[|:;—–\-\s]+/,'').match(/^([0-9OIl]{1,3})\s+([0-9A-Z]{3,14})\s+(.+)$/i);
+      return header&&/\d/.test(header[2])?header:null;
+    };
     for(let i=0;i<lines.length;i++){
       // Formato habitual: 001 123456 ARROZ 2 UN X 5,00 10,00 (también en dos líneas).
-      const header=lines[i].match(/^(\d{1,3})\s+(\d{3,14})\s+(.+)$/);
+      const header=itemHeader(lines[i]);
       if(!header)continue;
       const parts=header[3].match(detailPattern);
       let description=header[3],detail=parts,rawLine=lines[i];
@@ -44,7 +48,7 @@
         let combined=header[3];
         for(let offset=1;offset<=3&&lines[i+offset];offset++){
           const next=lines[i+offset];
-          if(/^(?:\d{1,3}\s+\d{3,14}\s|QTD|QTDE|VALOR\s+TOTAL|TOTAL|CNPJ|CPF)/i.test(next))break;
+          if(itemHeader(next)||/^(?:QTD|QTDE|VALOR\s+TOTAL|TOTAL|CNPJ|CPF)/i.test(next))break;
           combined+=' '+next;
           const joined=combined.match(detailPattern);
           if(joined&&joined[1]){detail=joined;rawLine=lines.slice(i,i+offset+1).join('\n');i+=offset;break;}
@@ -52,8 +56,9 @@
       }
       if(detail)description=detail[1];
       if(!detail)continue;
-      const rawUnit=detail[3].toUpperCase(),unit=rawUnit==='UM'?'UN':rawUnit==='KA'?'KG':rawUnit;
+      const rawUnit=detail[3].toUpperCase(),unit=['UM','UNG'].includes(rawUnit)?'UN':['KA','KAG','KS'].includes(rawUnit)?'KG':rawUnit;
       const issues=unit!==rawUnit?['unit_ocr_corrected']:[];
+      if(!/^\d+$/.test(header[2]))issues.push('code_ocr_review');
       let quantity=amount(detail[2]);
       const unitPrice=amount(detail[4]),itemTotal=amount(detail[6]);
       // Recuperar unidades enteras solo si los importes justifican exactamente la cantidad.

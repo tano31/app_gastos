@@ -26,18 +26,57 @@
   const make=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
   function ocrSummary(text){
     const parsed=ReceiptData.parse(text),comparison=ReceiptData.compareTotals(parsed.total,parsed.items);
-    return {parsed,comparison,complete:comparison.matches&&!!parsed.date&&!!parsed.merchant};
+    const reviewed=parsed.items.every(item=>{
+      const q=ReceiptData.amount(item.quantity),p=ReceiptData.amount(item.unitPrice),total=ReceiptData.amount(item.total);
+      return q!==null&&p!==null&&total!==null&&Math.abs(Math.round(q*p*100)-Math.round(total*100))<=1&&!item.issues?.includes('code_ocr_review');
+    });
+    return {parsed,comparison,complete:comparison.matches&&!!parsed.date&&!!parsed.merchant&&reviewed};
+  }
+  function receiptCrop(image){
+    const full={left:0,top:0,width:image.naturalWidth,height:image.naturalHeight};
+    const sample=make('canvas');
+    try{
+      const scale=Math.min(1,240/image.naturalWidth,480/image.naturalHeight);
+      sample.width=Math.max(1,Math.round(image.naturalWidth*scale));sample.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      const context=sample.getContext('2d',{willReadFrequently:true});
+      if(!context.getImageData)return full;
+      context.drawImage(image,0,0,sample.width,sample.height);
+      const pixels=context.getImageData(0,0,sample.width,sample.height).data,w=sample.width,h=sample.height;
+      const gray=new Uint8Array(w*h),histogram=new Uint32Array(256);
+      for(let i=0;i<gray.length;i++){gray[i]=Math.round(.299*pixels[i*4]+.587*pixels[i*4+1]+.114*pixels[i*4+2]);histogram[gray[i]]++;}
+      let percentile=0,count=0;for(;percentile<255;percentile++){count+=histogram[percentile];if(count>=gray.length*.75)break;}
+      const threshold=Math.max(110,Math.min(190,percentile*.72)),seen=new Uint8Array(gray.length),queue=new Int32Array(gray.length);
+      let best=null;
+      for(let start=0;start<gray.length;start++){
+        if(seen[start]||gray[start]<threshold)continue;
+        let head=0,tail=1,left=w,right=0,top=h,bottom=0;queue[0]=start;seen[start]=1;
+        while(head<tail){
+          const pos=queue[head++],x=pos%w,y=Math.floor(pos/w);left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
+          for(const next of [x>0?pos-1:-1,x+1<w?pos+1:-1,y>0?pos-w:-1,y+1<h?pos+w:-1]){
+            if(next>=0&&!seen[next]&&gray[next]>=threshold){seen[next]=1;queue[tail++]=next;}
+          }
+        }
+        if(!best||tail>best.area)best={left,right,top,bottom,area:tail};
+      }
+      if(!best||best.area<gray.length*.18)return full;
+      const bw=best.right-best.left+1,bh=best.bottom-best.top+1;
+      if(bw<w*.3||bh<h*.3||best.area/(bw*bh)<.65||(bw>w*.96&&bh>h*.96))return full;
+      const inset=Math.max(1,Math.round(Math.min(bw,bh)*.035));
+      const left=(best.left+inset)/scale,top=(best.top+inset)/scale;
+      return {left,top,width:Math.min(image.naturalWidth-left,(bw-2*inset)/scale),height:Math.min(image.naturalHeight-top,(bh-2*inset)/scale)};
+    }catch(error){return full;}finally{sample.width=sample.height=1;}
   }
   async function readPhoto(worker,image,manual=false){
     const canvas=make('canvas');
     try{
-      const scale=Math.min(1,2600/Math.max(image.naturalWidth,image.naturalHeight));
-      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
-      canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      const crop=receiptCrop(image),scale=Math.min(1,3200/Math.max(crop.width,crop.height),1800/crop.width);
+      canvas.width=Math.max(1,Math.round(crop.width*scale));
+      canvas.height=Math.max(1,Math.round(crop.height*scale));
       const context=canvas.getContext('2d');
       context.filter=manual?'grayscale(1) contrast(1.15)':'none';
-      context.drawImage(image,0,0,canvas.width,canvas.height);
-      if(worker.setParameters)await worker.setParameters({tessedit_pageseg_mode:manual?'6':'3',preserve_interword_spaces:'0'});
+      context.drawImage(image,crop.left,crop.top,crop.width,crop.height,0,0,canvas.width,canvas.height);
+      const cropped=crop.width<image.naturalWidth*.96||crop.height<image.naturalHeight*.96;
+      if(worker.setParameters)await worker.setParameters({tessedit_pageseg_mode:manual||cropped?'6':'3',preserve_interword_spaces:'0'});
       // Una única lectura por foto. Sin tiras ni selección automática de alternativas.
       const result=await worker.recognize(canvas);
       return String(result.data.text||'').trim();
@@ -86,11 +125,14 @@
     const quantityMessage={es:'Completá la cantidad de todos los productos para validar.',pt:'Preencha a quantidade de todos os produtos para validar.',en:'Complete every product quantity to validate.'}[(locale||'es').slice(0,2)]||'Complete every product quantity to validate.';
     const money=value=>new Intl.NumberFormat(locale,{style:'currency',currency:'BRL',currencyDisplay:'code'}).format(value);
     const outcome=missingQuantity?quantityMessage:comparison.complete?comparison.matches?t().validated:t().notMatching+' '+t().delta+money(comparison.difference):t().incomplete;
-    const node=get('receiptReconciliation');node.textContent=t().itemSum+money(comparison.sum)+' · '+outcome;
-    node.className=missingQuantity?'pending':comparison.complete?comparison.matches?'valid':'invalid':'pending';
+    const mismatched=items.some(item=>{const q=ReceiptData.amount(item.quantity),p=ReceiptData.amount(item.unitPrice),total=ReceiptData.amount(item.total);return q!==null&&p!==null&&total!==null&&Math.abs(Math.round(q*p*100)-Math.round(total*100))>1;});
+    const node=get('receiptReconciliation');node.textContent=t().itemSum+money(comparison.sum)+' · '+outcome+(mismatched?' '+t().lineWarning:'');
+    node.className=missingQuantity?'pending':mismatched?'invalid':comparison.complete?comparison.matches?'valid':'invalid':'pending';
   }
-  function table(){get('receiptItems').replaceChildren();items.forEach((item,index)=>{const row=make('tr');row.title=item.rawLine||'';['code','description','quantity','unit','unitPrice','parentheticalAmount','total'].forEach(field=>{
-    const cell=make('td'),input=make('input');input.type=['quantity','unitPrice','parentheticalAmount','total'].includes(field)?'number':'text';if(input.type==='number'){input.min='0';input.step='0.0001';}input.value=item[field]??'';cell.setAttribute('data-label',t()[{description:'product',unitPrice:'price',parentheticalAmount:'extraValue',total:'lineTotal'}[field]||field]);input.setAttribute('aria-label',t()[{description:'product',unitPrice:'price',parentheticalAmount:'extraValue',total:'lineTotal'}[field]||field]+' '+(index+1));input.oninput=()=>{item[field]=input.value;dirty=true;reconcile();};cell.appendChild(input);row.appendChild(cell);
+  function table(){get('receiptItems').replaceChildren();items.forEach((item,index)=>{const row=make('tr');row.title=item.rawLine||'';
+    function markReview(){const q=ReceiptData.amount(item.quantity),p=ReceiptData.amount(item.unitPrice),total=ReceiptData.amount(item.total);row.className=q===null||p===null||total===null||Math.abs(Math.round(q*p*100)-Math.round(total*100))>1?'receipt-item-warning':'';}
+    markReview();['code','description','quantity','unit','unitPrice','parentheticalAmount','total'].forEach(field=>{
+    const cell=make('td'),input=make('input');input.type=['quantity','unitPrice','parentheticalAmount','total'].includes(field)?'number':'text';if(input.type==='number'){input.min='0';input.step='0.0001';}input.value=item[field]??'';cell.setAttribute('data-label',t()[{description:'product',unitPrice:'price',parentheticalAmount:'extraValue',total:'lineTotal'}[field]||field]);input.setAttribute('aria-label',t()[{description:'product',unitPrice:'price',parentheticalAmount:'extraValue',total:'lineTotal'}[field]||field]+' '+(index+1));input.oninput=()=>{item[field]=input.value;dirty=true;markReview();reconcile();};cell.appendChild(input);row.appendChild(cell);
   });const cell=make('td'),remove=make('button',t().remove);remove.type='button';remove.onclick=()=>{items.splice(index,1);dirty=true;table();};cell.appendChild(remove);row.appendChild(cell);get('receiptItems').appendChild(row);});reconcile();}
   function draft(text){const data=ReceiptData.parse(text);get('receiptMerchant').value=data.merchant;get('receiptDate').value=data.date;get('receiptTotal').value=data.total??'';items=data.items;get('receiptDraft').hidden=false;dirty=false;draftRevision=revision;table();controls();}
   function canReplace(){return !dirty||window.confirm(t().replace);}

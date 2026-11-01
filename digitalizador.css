@@ -50,3 +50,5 @@
 @media(max-width:600px){.digitizer-card{padding:20px;}}
 .receipt-camera-actions { display:none; }
 @media(max-width:850px) { .receipt-camera-actions { display:block;margin:12px 0; }.receipt-camera-actions button { width:100%;min-height:44px; }.receipt-camera-actions button i { margin-right:6px; } }
+#receiptDraft .receipt-item-warning { background:#fff7df;border-color:#f5c86a; }
+#receiptDraft .receipt-item-warning td { background:#fff7df; }
