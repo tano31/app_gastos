@@ -28,62 +28,19 @@
     const parsed=ReceiptData.parse(text),comparison=ReceiptData.compareTotals(parsed.total,parsed.items);
     return {parsed,comparison,complete:comparison.matches&&!!parsed.date&&!!parsed.merchant};
   }
-  function preferOcr(current,candidate){
-    if(!candidate.trim())return current;
-    const a=ocrSummary(current),b=ocrSummary(candidate);
-    // Elegir una lectura completa: no mezclar importes o productos de intentos distintos.
-    const score=result=>[Number(result.comparison.matches),result.parsed.items.length,Number(!!result.parsed.date)+Number(!!result.parsed.merchant)+Number(result.parsed.total!==null)];
-    const left=score(a),right=score(b);
-    for(let i=0;i<left.length;i++){if(left[i]!==right[i])return right[i]>left[i]?candidate:current;}
-    return current||candidate;
-  }
-  async function readPhoto(worker,image,camera){
+  async function readPhoto(worker,image,manual=false){
     const canvas=make('canvas');
-    function draw(left,top,width,height,scale,contrast=false){
-      canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));
-      const context=canvas.getContext('2d');
-      context.filter=contrast?'grayscale(1) contrast(1.25)':'none';
-      context.drawImage(image,left,top,width,height,0,0,canvas.width,canvas.height);
-    }
-    let best='';
     try{
-      const width=image.naturalWidth,height=image.naturalHeight,scale=Math.min(1,2600/Math.max(width,height));
-      draw(0,0,width,height,scale);
-      best=String((await worker.recognize(canvas,{rotateAuto:true})).data.text||'').trim();
-      if(!worker.setParameters||(!camera&&ocrSummary(best).complete))return best;
-      try{
-        await worker.setParameters({tessedit_pageseg_mode:'6',preserve_interword_spaces:'1'});
-        draw(0,0,width,height,scale,true);
-        best=preferOcr(best,String((await worker.recognize(canvas,{rotateAuto:true})).data.text||'').trim());
-        // Leer tiras con solapamiento conserva letras pequeñas de tickets largos sin
-        // mantener un canvas gigante en la memoria del teléfono.
-        if(!ocrSummary(best).complete){
-          const detailScale=Math.min(1,2600/width),tileHeight=Math.min(height,Math.floor(1800/detailScale));
-          const overlap=Math.min(Math.floor(tileHeight*.2),Math.floor(300/detailScale));
-          const step=Math.max(1,tileHeight-overlap),count=Math.ceil(Math.max(0,height-tileHeight)/step)+1;
-          if(count<=10){
-            const strips=[];
-            for(let top=0;top<height;top+=step){
-              const cropHeight=Math.min(tileHeight,height-top);draw(0,top,width,cropHeight,detailScale,true);
-              strips.push({id:strips.length,text:String((await worker.recognize(canvas,{rotateAuto:true})).data.text||'').trim()});
-              if(top+cropHeight>=height)break;
-            }
-            // Una fila completa con número de ítem y código identifica el mismo
-            // producto en el borde de dos tiras de esta foto; no deduplicar sólo precios.
-            const clean=line=>line.trim().replace(/\s+/g,' ').toLowerCase();
-            for(let i=1;i<strips.length;i++){
-              const previous=strips[i-1].text.split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
-              const next=strips[i].text.split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
-              if(/^\d{1,3}\s+\d{3,14}\s/.test(next[0]||'')&&clean(previous.at(-1)||'')===clean(next[0])){
-                next.shift();strips[i].text=next.join('\n');
-              }
-            }
-            best=preferOcr(best,ReceiptData.consolidate(strips).text);
-          }
-        }
-      }catch(error){/* Un reintento fallido no descarta una lectura previa útil. */}
-      finally{await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'0'}).catch(()=>{});}
-      return best;
+      const scale=Math.min(1,2600/Math.max(image.naturalWidth,image.naturalHeight));
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+      canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      const context=canvas.getContext('2d');
+      context.filter=manual?'grayscale(1) contrast(1.15)':'none';
+      context.drawImage(image,0,0,canvas.width,canvas.height);
+      if(worker.setParameters)await worker.setParameters({tessedit_pageseg_mode:manual?'6':'3',preserve_interword_spaces:'0'});
+      // Una única lectura por foto. Sin tiras ni selección automática de alternativas.
+      const result=await worker.recognize(canvas);
+      return String(result.data.text||'').trim();
     }finally{canvas.width=canvas.height=1;}
   }
   function message(key,error=false){notice=key;isError=error;get('receiptBatchStatus').textContent=t()[key]||key;get('receiptBatchStatus').className=error?'error':'';}
@@ -102,16 +59,16 @@
     try{
       await tools.library('https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js');
       worker=await Tesseract.createWorker('por',1,{workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0',logger:info=>{if(info.status==='recognizing text')get('receiptBatchStatus').textContent=t().working+' '+(photos.findIndex(photo=>photo.state==='reading')+1)+' / '+photos.length+' · '+Math.round(info.progress*100)+'%';}});
-      for(const photo of photos){if(photo.state==='done'&&!force)continue;photo.state='reading';gallery();
+      for(const photo of photos){if(photo.state==='done'&&(!force||!photo.incomplete))continue;const previous={text:photo.text,qr:photo.qr,incomplete:photo.incomplete};photo.state='reading';photo.retryFailed=false;gallery();
         try{const image=new Image();image.src=photo.url;await image.decode();
           try{photo.qr=await tools.readQr(image);}catch(error){photo.qr=null;}
-          photo.text=await readPhoto(worker,image,photo.camera);
+          photo.text=await readPhoto(worker,image,force);
           photo.incomplete=!ocrSummary(photo.text).complete;
           if(!photo.text)throw Error('empty');photo.state='done';
-        }catch(error){photo.state='error';}gallery();
+        }catch(error){if(previous.text){photo.text=previous.text;photo.qr=previous.qr;photo.incomplete=previous.incomplete;photo.retryFailed=true;photo.state='done';}else photo.state='error';}gallery();
       }
     }catch(error){photos.filter(photo=>photo.state!=='done').forEach(photo=>photo.state='error');}
-    finally{if(worker)await worker.terminate().catch(()=>{});busy=false;gallery();message(photos.some(photo=>photo.state==='error')?'failed':'ready',photos.some(photo=>photo.state==='error'));}
+    finally{if(worker)await worker.terminate().catch(()=>{});busy=false;gallery();message(photos.some(photo=>photo.state==='error'||photo.retryFailed)?'failed':'ready',photos.some(photo=>photo.state==='error'||photo.retryFailed));}
   }
   function addPhotos(event){
     if(busy||saved)return;const incoming=Array.from(event.target.files||[]);event.target.value='';
