@@ -18,13 +18,14 @@
   function renderInflation(){
     const copy=inflationCopy[(document.documentElement.lang||'es').slice(0,2)]||inflationCopy.es;
     get('investmentInflationLabel').textContent=copy.label;
-    const value=get('investmentInflation'),note=get('investmentInflationPeriod');value.textContent='—';
+    const value=get('investmentInflation'),note=get('investmentInflationPeriod');value.textContent='—';value.title='';note.hidden=false;
     if(['1d','1w'].includes(period)){note.textContent=copy.weekly;return;}
     if(inflationLoading){note.textContent=copy.loading;return;}
     if(inflationFailed||!inflation){note.textContent=inflationFailureReason==='deployment'?copy.deployment:copy.error;return;}
     value.textContent=new Intl.NumberFormat(I18n.locale,{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2,signDisplay:'exceptZero'}).format(inflation.porcentaje/100);
     const month=key=>new Intl.DateTimeFormat(I18n.locale,{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(key+'-01T12:00:00Z'));
     note.textContent=inflation.meses===1?copy.monthly+' · '+month(inflation.hasta):inflation.meses+' '+copy.published+' · '+month(inflation.desde)+' – '+month(inflation.hasta);
+    value.title=note.textContent+' · IBGE · BCB';note.hidden=true;
   }
   async function loadInflation(force){
     const request=++inflationRequest,requestedPeriod=period;inflation=null;inflationFailed=false;inflationFailureReason='';inflationLoading=true;renderInflation();
