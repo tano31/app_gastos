@@ -80,8 +80,8 @@
 #holdingsGoalStatus.error { color:#dc2626; }
 @media(max-width:700px) { .holdings-summary { grid-template-columns:1fr; } #holdingsGoalForm { grid-template-columns:90px minmax(0,1fr); } }
 .investment-summary { grid-template-columns:minmax(220px,.9fr) minmax(130px,.5fr) minmax(150px,.55fr) minmax(240px,1.7fr); }
-.investment-summary .investment-inflation { align-self:start; }
-.investment-summary .investment-inflation strong { color:#dc2626;font-size:clamp(26px,2.5vw,34px);margin:4px 0; }
+.investment-summary .investment-inflation { align-self:center; }
+.investment-summary .investment-inflation strong { color:#dc2626;font-size:24px;margin:8px 0 0; }
 .investment-inflation p,.investment-inflation a { display:none!important; }
 @media(max-width:1200px) { .investment-summary { grid-template-columns:minmax(180px,1fr) repeat(2,minmax(120px,.7fr)); }.investment-chart { grid-column:1 / -1; } }
 @media(max-width:600px) { .investment-summary { grid-template-columns:minmax(0,1fr); } }
