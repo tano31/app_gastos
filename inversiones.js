@@ -6,33 +6,39 @@
   const API='https://script.google.com/macros/s/AKfycbycLE2I62VXXmjRq05Hm0Rpm3eNxHBVv34so0Kv1SP1zdzgIxgdtje_YSxsOJhQJ1LU/exec';
   const get=id=>document.getElementById(id), filter=get('investmentPeriod'), status=get('investmentStatus');
   let period='6m', busy=false, result=null;
-  let inflation=null,inflationLoading=false,inflationFailed=false,inflationRequest=0;
+  let inflation=null,inflationLoading=false,inflationFailed=false,inflationRequest=0,inflationFailureReason='';
   const inflationCopy={
     es:{label:'Inflación Brasil · IPCA',published:'meses publicados',monthly:'Último mes publicado',weekly:'El IPCA es mensual; no hay dato semanal.',loading:'Consultando IPCA…',error:'IPCA no disponible. Volvé a intentar al cambiar el período.'},
     pt:{label:'Inflação Brasil · IPCA',published:'meses publicados',monthly:'Último mês publicado',weekly:'O IPCA é mensal; não há dado semanal.',loading:'Consultando IPCA…',error:'IPCA indisponível. Tente novamente ao mudar o período.'},
     en:{label:'Brazil inflation · IPCA',published:'published months',monthly:'Latest published month',weekly:'IPCA is monthly; no weekly figure is available.',loading:'Loading IPCA…',error:'IPCA unavailable. Change the period to try again.'}
   };
+  inflationCopy.es.deployment='Falta actualizar y publicar Apps Script para habilitar el IPCA.';
+  inflationCopy.pt.deployment='Atualize e publique o Apps Script para habilitar o IPCA.';
+  inflationCopy.en.deployment='Update and deploy Apps Script to enable IPCA.';
   function renderInflation(){
     const copy=inflationCopy[(document.documentElement.lang||'es').slice(0,2)]||inflationCopy.es;
     get('investmentInflationLabel').textContent=copy.label;
     const value=get('investmentInflation'),note=get('investmentInflationPeriod');value.textContent='—';
     if(['1d','1w'].includes(period)){note.textContent=copy.weekly;return;}
     if(inflationLoading){note.textContent=copy.loading;return;}
-    if(inflationFailed||!inflation){note.textContent=copy.error;return;}
+    if(inflationFailed||!inflation){note.textContent=inflationFailureReason==='deployment'?copy.deployment:copy.error;return;}
     value.textContent=new Intl.NumberFormat(I18n.locale,{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2,signDisplay:'exceptZero'}).format(inflation.porcentaje/100);
     const month=key=>new Intl.DateTimeFormat(I18n.locale,{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(key+'-01T12:00:00Z'));
     note.textContent=inflation.meses===1?copy.monthly+' · '+month(inflation.hasta):inflation.meses+' '+copy.published+' · '+month(inflation.desde)+' – '+month(inflation.hasta);
   }
   async function loadInflation(force){
-    const request=++inflationRequest,requestedPeriod=period;inflation=null;inflationFailed=false;inflationLoading=true;renderInflation();
+    const request=++inflationRequest,requestedPeriod=period;inflation=null;inflationFailed=false;inflationFailureReason='';inflationLoading=true;renderInflation();
     if(['1d','1w'].includes(period)){inflationLoading=false;return;}
     try{
       const response=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'investment_inflation',perfil_token:user.perfil_token,periodo:requestedPeriod,...(force===true?{actualizar:true}:{})})});
       if(!response.ok)throw Error('IPCA');const data=await response.json();
+      if(data.ok===false&&String(data.error||'').trim()==='Acción no válida.'){
+        const error=Error('IPCA');error.reason='deployment';throw error;
+      }
       const count={'1m':1,'6m':6,'1y':12}[requestedPeriod],month=/^\d{4}-(0[1-9]|1[0-2])$/;
       if(!data.ok||!data.disponible||data.periodo!==requestedPeriod||data.meses!==count||!Number.isFinite(data.porcentaje)||!month.test(data.desde)||!month.test(data.hasta))throw Error('IPCA');
       if(request===inflationRequest)inflation=data;
-    }catch(error){if(request===inflationRequest)inflationFailed=true;}
+    }catch(error){if(request===inflationRequest){inflationFailed=true;inflationFailureReason=error.reason||'';}}
     finally{if(request===inflationRequest){inflationLoading=false;renderInflation();}}
   }
   const money=value=>new Intl.NumberFormat(I18n.locale,{style:'currency',currency:'BRL',minimumFractionDigits:4,maximumFractionDigits:4}).format(value);
