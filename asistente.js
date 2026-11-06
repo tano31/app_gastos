@@ -18,6 +18,10 @@
   Object.assign(copies.pt,{choosePeriod:'Consultar o mês atual ou escolher um período?',currentMonth:'Mês atual',customPeriod:'Escolher período',from:'De',to:'Até',analyze:'Consultar período',cancel:'Cancelar',invalidPeriod:'Escolha datas válidas, em ordem e não futuras. Máximo de 366 dias.'});
   Object.assign(copies.en,{choosePeriod:'Would you like the current month or a custom period?',currentMonth:'Current month',customPeriod:'Choose period',from:'From',to:'To',analyze:'Analyze period',cancel:'Cancel',invalidPeriod:'Choose valid dates in order, not in the future. Maximum 366 days.'});
   copies.es.quick.push('Cuánto falta para mi objetivo');copies.pt.quick.push('Quanto falta para meu objetivo');copies.en.quick.push('How long until I reach my goal');
+  Object.assign(copies.es,{deploymentError:'La app sigue conectada a una versión anterior de Apps Script. Publicá una nueva versión de la implementación existente.'});
+  Object.assign(copies.pt,{deploymentError:'O app está conectado a uma versão anterior do Apps Script. Publique uma nova versão da implantação existente.'});
+  Object.assign(copies.en,{deploymentError:'The app is connected to an older Apps Script version. Publish a new version of the existing deployment.'});
+  let backendVersion='';
   const lang=()=>(document.documentElement.lang||'es').slice(0,2),t=()=>copies[lang()]||copies.es;
   const make=(tag,className,text)=>{const node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=text;return node;};
   const launch=make('button','expense-assistant-launch');launch.type='button';launch.setAttribute('aria-expanded','false');launch.setAttribute('aria-controls','expenseAssistant');
@@ -84,9 +88,9 @@
     if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();if(!data.ok)throw Object.assign(Error(data.error||t().serviceError),{code:data.codigo,diagnostic:data.diagnostico});return data;
   }
   function diagnostic(error){const data=error.diagnostic;if(!data)return '';const clean=value=>String(value||'').replace(/[^a-zA-Z0-9_.:\/-]/g,'').slice(0,100);return [Number.isInteger(data.http_status)?'HTTP '+data.http_status:'',clean(data.modelo),clean(data.codigo_openai)].filter(Boolean).join(' · ');}
-  const errorKeys={assistant_not_configured:'notConfigured',assistant_daily_limit:'limit',assistant_api_key_error:'keyError',assistant_permission_error:'permissionError',assistant_model_error:'modelError',assistant_region_error:'regionError',assistant_request_error:'requestError',assistant_api_limit:'apiLimit',assistant_service_error:'serviceError',assistant_connection_error:'offline',assistant_session:'session'};
+  const errorKeys={assistant_deployment_error:'deploymentError',assistant_not_configured:'notConfigured',assistant_daily_limit:'limit',assistant_api_key_error:'keyError',assistant_permission_error:'permissionError',assistant_model_error:'modelError',assistant_region_error:'regionError',assistant_request_error:'requestError',assistant_api_limit:'apiLimit',assistant_service_error:'serviceError',assistant_connection_error:'offline',assistant_session:'session'};
   async function connect(){if(checking||busy)return;checking=true;ready=false;status('checking');controls();
-    try{const data=await request('assistant_status');ready=data.configurado===true;status(ready?'ready':'notConfigured',!ready);retry.hidden=ready;}
+    try{const data=await request('assistant_status');backendVersion=data.version||'';ready=data.configurado===true;status(ready?'ready':'notConfigured',!ready);retry.hidden=ready;}
     catch(error){status(errorKeys[error.code]||'offline',true);retry.hidden=false;}finally{checking=false;controls();}
   }
   function reset(){history=[];messages=[];lastTokens=null;choosing=null;conversationPeriod='';renderTokens();conversationCurrency=activeCurrency();renderMessages();status('changed');}
@@ -95,7 +99,7 @@
     const periodKey=range.desde?range.desde+'/'+range.hasta:'current:'+localToday().slice(0,7);
     if(activeCurrency()!==conversationCurrency||conversationPeriod&&conversationPeriod!==periodKey)reset();conversationPeriod=periodKey;busy=true;controls();retry.hidden=true;status('thinking');
     messages.push({role:'user',text});append('user',text);input.value='';const pending=append('pending',t().thinking);
-    try{const data=await request('assistant_chat',{mensaje:text,historial:history.slice(-6),...range,moneda:activeCurrency(),idioma:lang()});
+    try{if(text===t().quick[2]&&backendVersion!=='fino-fijos-20261105-2')throw Object.assign(Error(t().deploymentError),{code:'assistant_deployment_error'});const data=await request('assistant_chat',{mensaje:text,historial:history.slice(-6),...range,moneda:activeCurrency(),idioma:lang()});
       if(typeof data.respuesta!=='string'||!data.respuesta.trim())throw Error('Empty answer');
       pending.remove();messages.push({role:'assistant',text:data.respuesta});append('assistant',data.respuesta);
       lastTokens=data.tokens&&[data.tokens.entrada,data.tokens.salida,data.tokens.total].every(value=>Number.isSafeInteger(value)&&value>=0)?data.tokens:null;renderTokens();
