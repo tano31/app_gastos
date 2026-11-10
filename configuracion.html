@@ -412,6 +412,15 @@
                   <p id="changePasswordStatus" class="configuration-status" role="status" aria-live="polite"></p>
                 </form>
               </details>
+              <details id="platformInvitations" class="general-option" hidden>
+                <summary><i class="fa-solid fa-envelope" aria-hidden="true"></i><span id="invitationHeading">Invitar a probar la plataforma</span></summary>
+                <form id="platformInvitationForm" class="notification-settings">
+                  <p id="invitationHelp" class="profile-help">Enviá un correo de bienvenida con el enlace para crear una cuenta. No se otorgan permisos de administrador.</p>
+                  <label for="invitationEmail"><span id="invitationEmailLabel">Correo electrónico</span><input id="invitationEmail" type="email" autocomplete="email" maxlength="254" placeholder="persona@ejemplo.com" required></label>
+                  <button id="sendPlatformInvitation" type="submit">Enviar invitación</button>
+                  <p id="invitationStatus" class="configuration-status" role="status" aria-live="polite"></p>
+                </form>
+              </details>
               <details id="auditLogSettings" class="general-option" hidden>
                 <summary><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span>Registro de actividad</span></summary>
                 <div class="general-option-content">
@@ -512,6 +521,7 @@
   <script src="credenciales.js"></script>
   <script src="contrasena.js?v=20261024-eye"></script>
   <script src="auditoria.js?v=20261025"></script>
+  <script src="invitaciones.js?v=20261110"></script>
 
   <script src="notificaciones.js?v=20261025-independent-settings"></script>
   <script src="asistente.js?v=20261105-financial-tokens"></script>
